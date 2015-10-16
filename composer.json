@@ -1,0 +1,27 @@
+{
+  "name": "wetcat/litterbox-api",
+  "description": "The Litterbox backend.",
+  "type": "library",
+  "license": "Apache-2.0",
+  "keywords": ["Laravel", "Neo4j", "Commerce"],
+  "authors": [
+    {
+      "name": "Andreas Göransson",
+      "email": "andreasgoransson0@gmail.com"
+    }
+  ],
+  "require": {
+    "barryvdh/laravel-cors": "0.7.x",
+    "neoxygen/neoclient": "^3.3",
+    "ramsey/uuid": "^3.0",
+    "vinelab/neoeloquent": "^1.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.0.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Wetcat\\Litterbox\\": "src"
+    }
+  }
+}
