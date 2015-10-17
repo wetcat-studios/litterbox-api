@@ -242,5 +242,36 @@ class CustomerController extends Controller {
   {
     //
   }
+  
+  
+  /**
+   * Verify a customer node.
+   */
+  public function verify ()
+  {
+    $user = GoodtradeAdmin\User::where('uuid', Auth::user()->uuid)->first();
+    $input = Request::except(['_token']);
+    $updated = [];
+    foreach ($input as $key => $value) {
+      if ($value === 'on') {
+        $customer = GoodtradeAdmin\Customer::where('uuid', $key)->first();
+        $customer->number = GoodtradeAdmin\CustomerHelper::createCustomerNumber($customer->name);
+        $customer->save();
+        $customer->verifiedBy()->save($user);
+        $update[] = [
+          'uuid'  => $customer->uuid,
+          'name'  => $customer->name,
+        ];
+      }
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $updated,
+      'heading'   => 'Verified customers',
+      'messages'  => $messages
+    ], 200);
+  }]);
+  }
 
 }

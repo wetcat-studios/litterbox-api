@@ -27,11 +27,11 @@ class User extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'User';
 
 	protected $fillable = [
-		'uuid', 'firstname', 'lastname', 'email', 'password', 'role', 'note'
+		'uuid', 'firstname', 'lastname', 'email', 'password', 'role', 'note', 'token',
 	];
   
   protected $hidden = [
-    'password', 'remember_token'
+    'password', 'token',
   ];
 
   protected $dates = [
