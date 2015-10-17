@@ -20,19 +20,19 @@ class Order
       
       // If there is no token, just dissallow the access request.
       if (is_null($token)) {
-          sendFailedResponse(['You need to be authenticated to access this resource.']);
+        return $this->sendFailedResponse(['You need to be authenticated to access this resource.']);
       }
       
       // Or attempt to authenticate the user.
       else {
         $user = User::where('token', $token)->first();
         if (!!$user) {
-          // OK, don't do anything
-        } else {
           // Check that the user has 'order' role or more
           if (!in_array($user->role, $roles)) {
-            sendFailedResponse(['Bad authentication token.']);
+            return $this->sendFailedResponse(['You don\'t have permission to access this resource.']);
           }
+        } else {
+          return $this->sendFailedResponse(['Bad authentication token.']);
         }
       }
   }
@@ -48,7 +48,7 @@ class Order
       'data'      => [],
       'heading'   => null,
       'messages'  => $messages,
-    ], $status);
+    ], 401);
   }
 
 }
