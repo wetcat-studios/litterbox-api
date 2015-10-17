@@ -30,7 +30,7 @@ class LitterboxServiceProvider extends ServiceProvider
    *
    * @var bool
    */
-  protected $defer = true;
+  protected $defer = false;
   
 	
 	/**
@@ -74,7 +74,7 @@ class LitterboxServiceProvider extends ServiceProvider
     
     $this->commands($this->commands);
 
-    $this->registerLitterbox();
+    //$this->registerLitterbox();
   }
 
 
@@ -86,7 +86,6 @@ class LitterboxServiceProvider extends ServiceProvider
   public function provides ()
   {
     return [
-      'Vinelab\NeoEloquent\NeoEloquentServiceProvider',
     ];
   }
 

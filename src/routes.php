@@ -1,7 +1,7 @@
 <?php
 
 // API
-Route::group([], function ()
+Route::group(['middleware' => 'litterbox-auth'], function ()
 {
   Route::resource('addresses', 'Wetcat\Litterbox\Controllers\AddressController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('articles', 'Wetcat\Litterbox\Controllers\ArticleController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);

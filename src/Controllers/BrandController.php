@@ -14,6 +14,17 @@ use Rhumsaa\Uuid\Uuid;
 class BrandController extends Controller {
 
   /**
+   * Instantiate a new UserController instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+    $this->middleware('litterbox-auth');
+    $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
+  }
+  
+  /**
    * Display a listing of the resource.
    *
    * @return Response
