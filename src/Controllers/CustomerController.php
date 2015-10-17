@@ -271,7 +271,6 @@ class CustomerController extends Controller {
       'heading'   => 'Verified customers',
       'messages'  => $messages
     ], 200);
-  }]);
   }
 
 }

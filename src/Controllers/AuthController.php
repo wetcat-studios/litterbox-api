@@ -11,7 +11,7 @@ use Wetcat\Litterbox\Models\User;
 
 use Ramsey\Uuid\Uuid;
 
-class ChainController extends Controller {
+class AuthController extends Controller {
 
 	/**
    * Attempt to login (POST). This will try to find a user with the 

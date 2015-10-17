@@ -62,3 +62,16 @@ return [
   'hosts' => [],
 ]
 ```
+
+7. Make sure to disable CSRF tokens in `app\Http\Kernel.php`
+
+```php
+protected $middleware = [
+    \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+    \App\Http\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    //\App\Http\Middleware\VerifyCsrfToken::class,
+];
+```
