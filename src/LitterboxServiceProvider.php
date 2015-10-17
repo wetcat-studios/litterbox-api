@@ -30,7 +30,7 @@ class LitterboxServiceProvider extends ServiceProvider
    *
    * @var bool
    */
-  protected $defer = false;
+  protected $defer = true;
   
 	
 	/**
@@ -45,15 +45,17 @@ class LitterboxServiceProvider extends ServiceProvider
    *
    * @return void
    */
-  public function boot()
+  public function boot ()
   {
 		if (!$this->app->routesAreCached()) {
         require __DIR__.'/routes.php';
     }
 		
+    /*
     $this->publishes([
       __DIR__.'/config/config.php' => config_path('litterbox.php'),
     ]);
+    */
   }
 
 
@@ -62,11 +64,13 @@ class LitterboxServiceProvider extends ServiceProvider
    *
    * @return void
    */
-  public function register()
+  public function register ()
   {
+    /*
     $this->mergeConfigFrom(
       __DIR__.'/config/config.php', 'litterbox'
     );
+    */
     
     $this->commands($this->commands);
 
@@ -79,9 +83,11 @@ class LitterboxServiceProvider extends ServiceProvider
    *
    * @return array
    */
-  public function provides()
+  public function provides ()
   {
-    return [];
+    return [
+      'Vinelab\NeoEloquent\NeoEloquentServiceProvider',
+    ];
   }
 
 
@@ -90,8 +96,11 @@ class LitterboxServiceProvider extends ServiceProvider
    *
    * @return void
    */
-  protected function registerLitterbox()
+  protected function registerLitterbox ()
   {
+    /*
+     TODO: For use when I abandon NeoEloquent...
+     
     $this->app->singleton('Wetcat\Litterbox\Litterbox', function ($app) 
     {
       $alias    = Config::get('litterbox.default.alias', Config::get('litterbox::default.alias'));
@@ -112,6 +121,6 @@ class LitterboxServiceProvider extends ServiceProvider
         $pass
       );
     });
+    */
   }
-
 }
