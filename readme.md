@@ -41,9 +41,24 @@ Wetcat\Litterbox\LitterboxServiceProvider::class,
 ```php
 protected $routeMiddleware = [
   'cors'                  => Barryvdh\Cors\HandleCors::class,
+  'litterbox-guest'       => \Wetcat\Litterbox\Middleware\Guest::class,
   'litterbox-auth'        => \Wetcat\Litterbox\Middleware\Auth::class,
   'litterbox-storage'     => \Wetcat\Litterbox\Middleware\Order::class,
   'litterbox-admin'       => \Wetcat\Litterbox\Middleware\Admin::class,
   'litterbox-superadmin'  => \Wetcat\Litterbox\Middleware\Superadmin::class,
 ];
+```
+
+6. Set up CORS `app\config\cors.php`
+
+```php
+return [
+  'supportsCredentials' => false,
+  'allowedOrigins' => ['*'],
+  'allowedHeaders' => ['Content-Type', 'Accept', 'X-Auth-Token'],
+  'allowedMethods' => ['GET', 'POST', 'PUT',  'DELETE'],
+  'exposedHeaders' => [],
+  'maxAge' => 0,
+  'hosts' => [],
+]
 ```
