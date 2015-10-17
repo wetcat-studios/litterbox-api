@@ -20,7 +20,7 @@
 
 use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
 
-class Category extends \NeoEloquent {
+class Category extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 

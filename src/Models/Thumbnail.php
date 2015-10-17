@@ -20,7 +20,7 @@
 
 use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
 
-class Thumbnail extends \NeoEloquent {
+class Thumbnail extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 

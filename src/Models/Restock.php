@@ -20,7 +20,7 @@
 
 use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
 
-class Restock extends \NeoEloquent {
+class Restock extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 

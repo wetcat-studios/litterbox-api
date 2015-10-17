@@ -20,7 +20,7 @@
 
 use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
 
-class County extends \NeoEloquent {
+class County extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 

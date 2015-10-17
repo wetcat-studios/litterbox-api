@@ -24,7 +24,7 @@ use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
  * This represents one currency value in time, the date stamps are 
  * automatically added by Laravel/Neoeloquent.
  */
-class Rate extends \NeoEloquent {
+class Rate extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 

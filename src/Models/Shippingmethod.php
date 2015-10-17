@@ -20,7 +20,7 @@
 
 use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
 
-class Shippingmethod extends \NeoEloquent {
+class Shippingmethod extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 

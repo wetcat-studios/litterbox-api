@@ -20,7 +20,7 @@
 
 use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
 
-class Currency extends \NeoEloquent {
+class Currency extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 

@@ -20,7 +20,7 @@
 
 use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
 
-class Email extends \NeoEloquent {
+class Email extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 

@@ -20,7 +20,7 @@
 
 use Vinelab\NeoEloquent\Eloquent\SoftDeletes;
 
-class Chain extends \NeoEloquent {
+class Chain extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   use SoftDeletes;
 
