@@ -18,25 +18,29 @@ class Admin
     */
   public function handle(\Illuminate\Http\Request $request, Closure $next)
   {
-      $token = $request->header('X-Auth-Token');
-      
-      // If there is no token, just dissallow the access request.
-      if (is_null($token)) {
-        return $this->sendFailedResponse(['You need to be authenticated to access this resource.']);
-      }
-      
-      // Or attempt to authenticate the user.
-      else {
-        $user = User::where('token', $token)->first();
-        if (!!$user) {
-          // Check that the user has 'order' role or more
-          if (!in_array($user->role, $roles)) {
-            return $this->sendFailedResponse(['You don\'t have permission to access this resource.']);
-          }
+    $token = $request->header('X-Auth-Token');
+    
+    // If there is no token, just dissallow the access request.
+    if (is_null($token)) {
+      return $this->sendFailedResponse(['You need to be authenticated to access this resource.']);
+    }
+    
+    // Or attempt to authenticate the user.
+    else {
+      $user = User::where('token', $token)->first();
+      if (!!$user) {
+        // Check that the user has 'order' role or more
+        if (!in_array($user->role, $roles)) {
+          return $this->sendFailedResponse(['You don\'t have permission to access this resource.']);
         } else {
-          return $this->sendFailedResponse(['Bad authentication token.']);
+          // Don't do anything
         }
+      } else {
+        return $this->sendFailedResponse(['Bad authentication token.']);
       }
+    }
+    
+    return $next($request);
   }
   
   

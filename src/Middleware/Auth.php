@@ -27,11 +27,13 @@ class Auth
     else {
       $user = User::where('token', $token)->first();
       if (!!$user) {
-        // OK, don't do anything
+        // Don't do anything
       } else {
         return $this->sendFailedResponse(['Bad authentication token.']);
       }
     }
+    
+    return $next($request);
   }
   
   

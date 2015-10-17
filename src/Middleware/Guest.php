@@ -27,6 +27,8 @@ class Guest
         // Okay, no valid token so we just accept the guest request.
       }
     }
+    
+    return $next($request);
   }
   
   
