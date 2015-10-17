@@ -48,7 +48,7 @@ class LitterboxServiceProvider extends ServiceProvider
   public function boot()
   {
 		if (!$this->app->routesAreCached()) {
-        require __DIR__.'/../../routes.php';
+        require __DIR__.'/routes.php';
     }
 		
     $this->publishes([
