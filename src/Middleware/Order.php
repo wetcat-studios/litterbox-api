@@ -2,6 +2,8 @@
 
 use Closure;
 
+use Wetcat\Litterbox\Models\User;
+
 class Order
 {
   
