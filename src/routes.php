@@ -1,23 +1,24 @@
 <?php
 
 // Public auth routes
-Route::group(['prefix' => 'auth', 'middleware' => 'litterbox-guest'], function () 
+Route::group(['prefix' => 'auth', 'middleware' => ['cors', 'litterbox-guest']], function () 
 {
   Route::post('login', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@login']);
   Route::post('register', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@register']);
   Route::post('request', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@request']);
 });
 
+
 // Protected auth routes
-Route::group(['prefix' => 'user', 'middleware' => 'litterbox-auth', function () 
+Route::group(['prefix' => 'user', 'middleware' => ['cors', 'litterbox-auth']], function () 
 {
   Route::put('password/{uuid}', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@password']);
   Route::post('name/{uuid}', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@name']);
-}]);
+});
 
 
 // API
-Route::group(['middleware' => 'litterbox-auth'], function ()
+Route::group(['middleware' => ['cors', 'litterbox-auth']], function ()
 {
   Route::resource('addresses', 'Wetcat\Litterbox\Controllers\AddressController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('articles', 'Wetcat\Litterbox\Controllers\ArticleController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
@@ -45,15 +46,16 @@ Route::group(['middleware' => 'litterbox-auth'], function ()
   Route::resource('shippingmethods', 'Wetcat\Litterbox\Controllers\ShippingmethodController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('users', 'Wetcat\Litterbox\Controllers\UserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 
-  Route::get('customers/number/{name}', ['as' => 'api.customers.number', function ($name){
+  Route::get('customers/number/{name}', function ($name) {
     return response()->json([
       'status'    => 200,
       'data'      => GoodtradeAdmin\CustomerHelper::createCustomerNumber($name),
       'heading'   => 'Customer number',
       'messages'  => null
     ], 200);
-  }]);
+  });
 
   // Special route for validating customers
   Route::post('customers/verify', ['uses' => 'Wetcat\Litterbox\Controllers\CustomerController@verify']);
+  
 });

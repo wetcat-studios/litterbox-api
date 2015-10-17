@@ -10,10 +10,13 @@ This assumes you've already installed Laravel 5.1.19 (neoeloquent is not compati
 
 ```php
 Vinelab\NeoEloquent\NeoEloquentServiceProvider::class,
+Barryvdh\Cors\ServiceProvider::class,
 Wetcat\Litterbox\LitterboxServiceProvider::class,
 ```
 
 3. Publish config `php artisan vendor:publish` and modify to suit your Neo server.
+
+4. Update configs.
 
 4. Add datbase settings
 
@@ -23,13 +26,13 @@ Wetcat\Litterbox\LitterboxServiceProvider::class,
 
 ```php
 'connections' => [
-    'neo4j' => [
-        'driver' => 'neo4j',
-        'host'   => 'localhost',
-        'port'   => '7474',
-        'username' => null,
-        'password' => null
-    ]
+  'neo4j' => [
+    'driver' => 'neo4j',
+    'host'   => 'localhost',
+    'port'   => '7474',
+    'username' => null,
+    'password' => null
+  ]
 ]
 ```
 
@@ -37,9 +40,10 @@ Wetcat\Litterbox\LitterboxServiceProvider::class,
 
 ```php
 protected $routeMiddleware = [
-    'litterbox-auth' => \Wetcat\Litterbox\Middleware\Auth::class,
-    'litterbox-storage' => \Wetcat\Litterbox\Middleware\Order::class,
-    'litterbox-admin' => \Wetcat\Litterbox\Middleware\Admin::class,
-    'litterbox-superadmin' => \Wetcat\Litterbox\Middleware\Superadmin::class,
+  'cors'                  => Barryvdh\Cors\HandleCors::class,
+  'litterbox-auth'        => \Wetcat\Litterbox\Middleware\Auth::class,
+  'litterbox-storage'     => \Wetcat\Litterbox\Middleware\Order::class,
+  'litterbox-admin'       => \Wetcat\Litterbox\Middleware\Admin::class,
+  'litterbox-superadmin'  => \Wetcat\Litterbox\Middleware\Superadmin::class,
 ];
 ```
