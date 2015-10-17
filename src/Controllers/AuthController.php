@@ -96,7 +96,7 @@ class AuthController extends Controller {
       'uuid'      => Uuid::uuid4()->toString(),
       'email'     => $request->input('email'),
       'firstname' => $request->input('firstname'),
-      'lastname'  => $request->input('firstname'),
+      'lastname'  => $request->input('lastname'),
       'password'  => bcrypt($request->input('password')),
       'token'     => Uuid::uuid1()->toString(),
       'role'      => $request->input('role')
