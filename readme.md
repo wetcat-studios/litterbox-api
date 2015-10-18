@@ -43,7 +43,7 @@ protected $routeMiddleware = [
   'cors'                  => Barryvdh\Cors\HandleCors::class,
   'litterbox-guest'       => \Wetcat\Litterbox\Middleware\Guest::class,
   'litterbox-auth'        => \Wetcat\Litterbox\Middleware\Auth::class,
-  'litterbox-storage'     => \Wetcat\Litterbox\Middleware\Order::class,
+  'litterbox-order'     => \Wetcat\Litterbox\Middleware\Order::class,
   'litterbox-admin'       => \Wetcat\Litterbox\Middleware\Admin::class,
   'litterbox-superadmin'  => \Wetcat\Litterbox\Middleware\Superadmin::class,
 ];
