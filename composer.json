@@ -14,8 +14,7 @@
     "barryvdh/laravel-cors": "0.7.x",
     "neoxygen/neoclient": "^3.3",
     "ramsey/uuid": "^3.0",
-    "vinelab/neoeloquent": "^1.2",
-    "tymon/jwt-auth": "^0.5.5"
+    "vinelab/neoeloquent": "^1.2"
   },
   "require-dev": {
     "phpunit/phpunit": "4.0.*"

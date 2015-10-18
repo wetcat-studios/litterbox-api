@@ -11,29 +11,10 @@ This assumes you've already installed Laravel 5.1.19 (neoeloquent is not compati
 ```php
 Vinelab\NeoEloquent\NeoEloquentServiceProvider::class,
 Barryvdh\Cors\ServiceProvider::class,
-Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
 Wetcat\Litterbox\LitterboxServiceProvider::class,
 ```
 
-3. Add facades
-
-```php
-'JWTAuth' => 'Tymon\JWTAuth\Facades\JWTAuth',
-'JWTFactory' => 'Tymon\JWTAuth\Facades\JWTFactory',
-```
-
-
 3. Publish config `php artisan vendor:publish` and modify to suit your Neo server.
-
-```php
-php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\JWTAuthServiceProvider"
-```
-
-4. Create JWT key
-
-```php
-php artisan jwt:generate
-```
 
 4. Update configs.
 
