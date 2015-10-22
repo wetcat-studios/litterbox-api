@@ -12,7 +12,7 @@ use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\Country;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 use Unirest\Request as Unirequest;
 

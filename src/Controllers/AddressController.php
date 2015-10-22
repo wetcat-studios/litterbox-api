@@ -14,7 +14,7 @@ use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\City;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class AddressController extends Controller {
 

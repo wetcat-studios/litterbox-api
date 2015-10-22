@@ -27,7 +27,10 @@ class Customer extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Customer';
 
 	protected $fillable = [
-    'uuid', 'name', 'number', 'corporate', 'store_type', 'invoice_type_paper', 'invoice_type_email',
+    'uuid', 'name', 'number', 'corporate', 
+    'store_type', 
+    'invoice_type_paper', 'invoice_type_email',
+    'rebate',
 	];
   
   protected $hidden = [

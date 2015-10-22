@@ -11,7 +11,7 @@ use Wetcat\Litterbox\Models\User;
 use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Customer;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class EmailController extends Controller {
 

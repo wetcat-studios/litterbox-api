@@ -8,7 +8,7 @@ use Validator;
 
 use Wetcat\Litterbox\Models\Thumbnail;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class ThumbnailController extends Controller {
 

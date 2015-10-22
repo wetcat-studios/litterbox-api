@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use Wetcat\Litterbox\Models\Country;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class CountryController extends Controller {
 

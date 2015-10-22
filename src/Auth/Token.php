@@ -29,7 +29,7 @@ class Token
     $data = [
       'uuid'  => $fromUser->uuid,
       'name'  => $fromUser->firstname . ' ' . $fromUser->lastname,
-      'role'  => Auth::getUserRole($fromUser->role),
+      'role'  => Roles::getRoleName($fromUser->role),
     ];
     $data_b64 = urlencode(base64_encode(json_encode($data)));
     

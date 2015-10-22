@@ -9,7 +9,7 @@ use Validator;
 use Wetcat\Litterbox\Models\Brand;
 use Wetcat\Litterbox\Models\Picture;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class BrandController extends Controller {
 

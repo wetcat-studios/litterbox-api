@@ -9,7 +9,7 @@ use Validator;
 use Wetcat\Litterbox\Models\Shippingmethod;
 use Wetcat\Litterbox\Models\Segment;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class ShippingmethodController extends Controller
 {

@@ -9,7 +9,7 @@ use Validator;
 use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Currency;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class ManufacturerController extends Controller {
 

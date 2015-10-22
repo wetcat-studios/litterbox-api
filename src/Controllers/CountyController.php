@@ -10,7 +10,7 @@ use Wetcat\Litterbox\Models\County;
 use Wetcat\Litterbox\Models\Address;
 use Wetcat\Litterbox\Models\City;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class CountyController extends Controller {
 

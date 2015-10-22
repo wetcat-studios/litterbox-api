@@ -16,6 +16,8 @@ use Unirest\Request as Unirequest;
 
 use Wetcat\Fortie\Fortie;
 
+use Ramsey\Uuid\Uuid;
+
 class PagesController extends Controller {
 
   protected $fortie;

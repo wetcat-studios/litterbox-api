@@ -13,7 +13,7 @@ use Wetcat\Litterbox\Models\Article;
 use Wetcat\Litterbox\Models\Category;
 use Wetcat\Litterbox\Models\Picture;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class CampaignController extends Controller
 {

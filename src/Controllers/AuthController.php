@@ -11,6 +11,10 @@ use Wetcat\Litterbox\Models\User;
 
 use Ramsey\Uuid\Uuid;
 
+use Wetcat\Litterbox\Auth\Auth as AuthHelper;
+
+use Wetcat\Litterbox\Auth\Token as TokenHelper;
+
 class AuthController extends Controller {
 
 	/**
@@ -39,17 +43,15 @@ class AuthController extends Controller {
         'messages'  => $messages
       ], 400);
     }
-		
-		$user = User::where('email', $request->input('email'))
-								->where('password', bcrypt($request->input('password')))
-								->first();
-								
-	  if (!!$user) {
-			$user->token = Uuid::uuid1()->toString();
-      $user->save();
+
+    $user = AuthHelper::checkCredentials($request->input('email'), $request->input('password'));
+    
+	  if (!is_null($user)) {
+			$composedToken = TokenHelper::composeToken($user);
+      
       return response()->json([
         'status'    => 200,
-        'data'      => ['token' => $user->token],
+        'data'      => [$composedToken],
         'heading'   => 'Login',
         'messages'  => ['Login successful']
       ], 200);

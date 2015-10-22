@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use Wetcat\Litterbox\Requests;
 use Wetcat\Litterbox\Controllers\Controller;
 
+use Ramsey\Uuid\Uuid;
+
 class RestockController extends Controller
 {
   /**

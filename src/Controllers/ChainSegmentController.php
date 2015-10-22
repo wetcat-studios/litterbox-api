@@ -9,7 +9,7 @@ use Validator;
 use Wetcat\Litterbox\Models\Chain;
 use Wetcat\Litterbox\Models\Chainsegment;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class ChainSegmentController extends Controller {
 

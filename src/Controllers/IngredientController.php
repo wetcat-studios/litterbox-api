@@ -8,7 +8,7 @@ use Validator;
 
 use Wetcat\Litterbox\Models\Ingredient;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class IngredientController extends Controller
 {

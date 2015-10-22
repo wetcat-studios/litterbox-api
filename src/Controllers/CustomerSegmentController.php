@@ -8,7 +8,7 @@ use Validator;
 
 use Wetcat\Litterbox\Models\Customersegment;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class CustomerSegmentController extends Controller {
 

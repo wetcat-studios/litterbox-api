@@ -14,7 +14,7 @@ use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Phone;
 use Wetcat\Litterbox\Models\Segment;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class UserController extends Controller {
 
@@ -99,7 +99,7 @@ class UserController extends Controller {
       // Extra data
       'note'      => $request->input('note'),
 
-      'password'  => bcrypt($randomPw),
+      'password'  => Hash::make($randomPw),
       'role'      => 'user',
       'verified'  => 1,
     ];

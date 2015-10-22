@@ -10,7 +10,7 @@ use Wetcat\Litterbox\Models\Order;
 use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\Article;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class OrderController extends Controller {
 

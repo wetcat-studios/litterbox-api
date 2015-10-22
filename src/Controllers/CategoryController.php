@@ -8,7 +8,7 @@ use Validator;
 
 use Wetcat\Litterbox\Models\Category;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class CategoryController extends Controller {
 

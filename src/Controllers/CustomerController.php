@@ -20,7 +20,7 @@ use Wetcat\Litterbox\Models\Chainsegment;
 use Wetcat\Litterbox\Models\Picture;
 use Wetcat\Litterbox\Models\User;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class CustomerController extends Controller {
 
@@ -106,6 +106,7 @@ class CustomerController extends Controller {
       'name'          => 'required',
       'number'        => 'required',
       'corporate'     => 'required',
+      'rebate'        => 'number',
 
       // The customer segment type (uuid for the node)
       'customer-segment'  => 'required|string',
@@ -148,6 +149,7 @@ class CustomerController extends Controller {
       'store_type'          => $request->input('store-type'),
       'invoice_type_paper'  => $invoice_type_paper,
       'invoice_type_email'  => $invoice_type_email,
+      'rebate'    => $request->input('rebate'),
     ];
 
     // Create the customer

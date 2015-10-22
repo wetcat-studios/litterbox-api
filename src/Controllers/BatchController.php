@@ -15,7 +15,7 @@ use Wetcat\Litterbox\Models\Currency;
 use Wetcat\Litterbox\Models\Delivery;
 use Wetcat\Litterbox\Models\Segment;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class BatchController extends Controller {
 

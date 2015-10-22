@@ -11,7 +11,7 @@ use Wetcat\Litterbox\Models\Chain;
 use Wetcat\Litterbox\Models\Country;
 use Wetcat\Litterbox\Models\Picture;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class ChainController extends Controller {
 

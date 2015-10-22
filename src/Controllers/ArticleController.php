@@ -16,7 +16,7 @@ use Wetcat\Litterbox\Models\Picture;
 use Wetcat\Litterbox\Models\Segment;
 use Wetcat\Litterbox\Models\Ingredient;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class ArticleController extends Controller {
 

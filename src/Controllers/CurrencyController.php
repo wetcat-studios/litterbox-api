@@ -9,7 +9,7 @@ use Validator;
 use Wetcat\Litterbox\Models\Currency;
 use Wetcat\Litterbox\Models\Rate;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class CurrencyController extends Controller {
 
@@ -122,9 +122,11 @@ class CurrencyController extends Controller {
     $currency = Currency::create($currencyData);
     $rel = $currency->rates()->save($rate);
 
+    $out = Currency::with('rates')->where('uuid', $currency->uuid)->first();
+    
     return response()->json([
       'status'    => 200,
-      'data'      => $currency,
+      'data'      => $out,
       'heading'   => 'Currency',
       'messages'  => ['Currency ' . $currency->name . ' created']
     ], 200);

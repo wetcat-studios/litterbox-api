@@ -10,7 +10,7 @@ use Wetcat\Litterbox\Models\Address;
 use Wetcat\Litterbox\Models\Country;
 use Wetcat\Litterbox\Models\City;
 
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class CityController extends Controller {
 
