@@ -14,7 +14,8 @@
     "barryvdh/laravel-cors": "0.7.x",
     "neoxygen/neoclient": "^3.3",
     "ramsey/uuid": "^3.0",
-    "vinelab/neoeloquent": "^1.2"
+    "vinelab/neoeloquent": "^1.2",
+    "intervention/image": "^2.3"
   },
   "require-dev": {
     "phpunit/phpunit": "4.0.*"
