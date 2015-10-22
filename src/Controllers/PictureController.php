@@ -89,7 +89,7 @@ class PictureController extends Controller {
       File::makeDirectory($thumbdir, 0775, true, true);
 
       // upload new image
-      Image::make($request->file('picture'))
+      Intervention\Image::make($request->file('picture'))
         // original
         ->save($dir . '/' . $filename)
         // thumbnail
