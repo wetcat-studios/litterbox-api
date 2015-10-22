@@ -40,24 +40,24 @@ class Roles
 	/**
 	 * Verify that the supplied role is part of the array of roles.
 	 */
-	public static function verify ($role, $level)
+	public static function verify ($userRole, $required)
 	{
 		// Test the role as integer
-		if (is_int($role)) {
-			if (is_int($level)) {
-				return ($role >= $level);
+		if (is_numeric($userRole)) {
+			if (is_numeric($required)) {
+				return ($userRole >= $required);
 			} else {
-				return ($role >= self::getRoleValue($level));
+				return ($userRole >= self::getRoleValue($required));
 			}
 		}
 		
 		// Convert the role name to value
 		else {
-			$roleVal = self::getRoleValue($role);
-			if (is_int($level)) {
-				return ($roleVal >= $level);
+			$roleVal = self::getRoleValue($userRole);
+			if (is_numeric($required)) {
+				return ($roleVal >= $required);
 			} else {
-				return ($roleVal >= self::getRoleValue($level));
+				return ($roleVal >= self::getRoleValue($required));
 			}
 		}
 	}

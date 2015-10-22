@@ -1,6 +1,7 @@
 <?php namespace Wetcat\Litterbox\Middleware;
 
 use Wetcat\Litterbox\Auth\Token as TokenHelper;
+use Wetcat\Litterbox\Auth\Roles as RoleHelper;
 
 use Wetcat\Litterbox\Models\User;
 
@@ -40,7 +41,7 @@ class LitterboxMiddleware
     if (is_null($data) || !TokenHelper::verifyData($data)) {
       return $this->sendFailedResponse(['Poorly composed data.']);
     }
-    
+
     // Get the secret
     $secret = base64_decode(urldecode($parts[2]));
     
@@ -54,7 +55,7 @@ class LitterboxMiddleware
     if (strcmp($user->firstname.' '.$user->lastname, $data['name']) !== 0) {
       return $this->sendFailedResponse(['Name data is incorrect.']);
     }
-    if (strcmp($user->role, $data['role']) !== 0) {
+    if (strcmp(RoleHelper::getRoleName($user->role), $data['role']) !== 0) {
       return $this->sendFailedResponse(['Role data is incorrect.']);
     }
     
