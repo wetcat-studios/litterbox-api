@@ -116,9 +116,11 @@ class ManufacturerController extends Controller {
     $currency = Currency::where('uuid', $request->input('currency'))->first();
     $rel = $currency->manufacturers()->save($manufacturer);
 
+    $out = Manufacturer::with('addresses', 'emails')->where('uuid', $manufacturer->uuid)->first();
+
     return response()->json([
       'status'    => 201,
-      'data'      => $manufacturer,
+      'data'      => $out,
       'heading'   => 'Manufacturer',
       'messages'  => ['Manufacturer created']
     ], 201);

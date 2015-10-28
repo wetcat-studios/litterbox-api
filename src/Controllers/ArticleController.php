@@ -111,57 +111,58 @@ class ArticleController extends Controller {
       'name'    => 'required|string',
       'number'  => 'required',
       'ean'     => 'required|string',
-      'price_in'      => 'required',
+      'price'         => 'required',
       'discountrate'  => 'integer',
-      'restock_threshold' => 'required|integer',
-      'restock_amount'    => 'required|integer',
+      'restockthreshold' => 'required|integer',
+      'restockamount'    => 'required|integer',
 //      'expired'         => 'required',
 //      'sustainability'    => 'required|integer', // Moved to segment
-      'filename'             => 'string',
+      'filename'         => 'string',
 
       // Package (one single unit)
-      'package_weight'  => 'required',
-      'package_width'   => 'required',
-      'package_length'  => 'required',
-      'package_height'  => 'required',
+      'packageweight'  => 'required',
+      'packagewidth'   => 'required',
+      'packagelength'  => 'required',
+      'packageheight'  => 'required',
       
       // Colli (a full set of units)
-      'colli_weight'  => 'required',
-      'colli_width'   => 'required',
-      'colli_length'  => 'required',
-      'colli_height'  => 'required',
+      'colliweight'  => 'required',
+      'colliwidth'   => 'required',
+      'collilength'  => 'required',
+      'colliheight'  => 'required',
 
       // Packaging units
-      'package_per_colli'     => 'required|integer',
-      'colli_per_eu_pallet'   => 'required|integer',
-      'colli_per_eu_lav'      => 'required|integer',
-      'colli_per_half_pallet' => 'required|integer',
-      'colli_per_half_lav'    => 'required|integer',
-      'colli_per_ship_pallet' => 'required|integer',
-      'colli_per_ship_lav'    => 'required|integer',
+      'packagepercolli'    => 'required|integer',
+      'collipereupallet'   => 'required|integer',
+      'collipereulav'      => 'required|integer',
+      'colliperhalfpallet' => 'required|integer',
+      'colliperhalflav'    => 'required|integer',
+      'collipershippallet' => 'required|integer',
+      'collipershiplav'    => 'required|integer',
       
       // Nutrients
-      'nutrients_energy'        => 'required',
-      'nutrients_fat'           => 'required',
-      'nutrients_saturatedfat'  => 'required',
-      'nutrients_carbs'         => 'required',
-      'nutrients_sugar'         => 'required',
-      'nutrients_fibers'        => 'required',
-      'nutrients_protein'       => 'required',
-      'nutrients_salt'          => 'required',
+      'energy'        => 'required',
+      'fat'           => 'required',
+      'saturatedfat'  => 'required',
+      'carbs'         => 'required',
+      'sugar'         => 'required',
+      'fibers'        => 'required',
+      'proteins'      => 'required',
+      'salt'          => 'required',
       
       // Ingredients (comma separated text)
       'ingredients' => 'string',
 
-      // Category validation (just the uuid)
-      'category'  => 'required|string',
+      // Category validation
+      'category'    => 'required|string', // Single category (primary)
+      'categories'  => 'string', // This is a CSV string of "categories"
 
       // Brand validation (just the uuid)
       'brand' => 'required|string',
 
       // Manufacturer validation
       'manufacturer'     => 'required|string',
-      'manufacturer_number' => 'required|string',
+      'manufacturernumber' => 'required|string',
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -182,15 +183,59 @@ class ArticleController extends Controller {
     // Create article (the model will select which values we will fill with...)
     $article = Article::create($articleData);
     
-    // Find and connect to Category
-    $categories = explode(',', $request->input('category'));
-    foreach ($categories as $category) {
-      if (Uuid::isValid($category)) {
-        $category = Category::where('uuid', $category)->first();
+    // Find and connect to Primary Category
+    if (Uuid::isValid($request->input('category'))) {
+      $category = Category::where('uuid', $request->input('category'))->first();
+      $rel = $category->articles()->save($article);
+      $rel->type = $request->input('primary');
+      $rel->save();
+    } else {
+      // Or if it's a string - create
+      $category = Category::where('name', $request->input('category'))->first();
+      if (!!$category) {
         $rel = $category->articles()->save($article);
+        $rel->type = $request->input('primary');
+        $rel->save();
+      } else {
+        $category = Category::create([
+          'uuid'  => Uuid::uuid4()->toString(),
+          'name'  => $request->input('category')
+        ]);
+        $rel = $category->articles()->save($article);
+        $rel->type = $request->input('primary');
+        $rel->save();
       }
     }
 
+    // Find and connect to Secondary categories
+    if ($request->has('categories')) {
+      $categories = explode(',', $request->input('categories'));
+      foreach ($categories as $cat) {
+        if (Uuid::isValid($cat)) {
+          $category = Category::where('uuid', $cat)->first();
+          $rel = $category->articles()->save($article);
+          $rel->type = $request->input('secondary')[$i];
+          $rel->save();
+        } else {
+          // Or if it's a string - create
+          $category = Category::where('name', $cat)->first();
+          if (!!$category) {
+            $rel = $category->articles()->save($article);
+            $rel->type = $request->input('secondary')[$i];
+            $rel->save();
+          } else {
+            $category = Category::create([
+              'uuid'  => Uuid::uuid4()->toString(),
+              'name'  => $cat
+            ]);
+            $rel = $category->articles()->save($article);
+            $rel->type = $request->input('secondary')[$i];
+            $rel->save();
+          }
+        }
+      }
+    }
+    
     // Find and connect to Brand
     $brandId = $request->input('brand');
     $brand = Brand::where('uuid', $brandId)->firstOrFail();

@@ -1,9 +1,15 @@
 <?php namespace Wetcat\Litterbox\Controllers;
 
-use Illuminate\Http\Request;
-
 use Wetcat\Litterbox\Requests;
 use Wetcat\Litterbox\Controllers\Controller;
+
+use Illuminate\Http\Request;
+use Validator;
+use Input;
+
+use Wetcat\Litterbox\Models\Article;
+use Wetcat\Litterbox\Models\Manufacturer;
+use Wetcat\Litterbox\Models\Restock;
 
 use Ramsey\Uuid\Uuid;
 
@@ -14,9 +20,22 @@ class RestockController extends Controller
    *
    * @return Response
    */
-  public function index()
+  public function index(Request $request)
   {
-      //
+    $orders = [];
+    if ($request->has('rel')) {
+      $rels = explode('_', $request->input('rel'));
+      $orders = Restock::with($rels)->get();
+    } else {
+      $orders = Restock::all();
+    }
+    
+    return response()->json([
+      'status'    => 200,
+      'data'      => $orders,
+      'heading'   => 'Restock',
+      'messages'  => null
+    ], 200);
   }
 
   /**
@@ -38,8 +57,8 @@ class RestockController extends Controller
   public function store(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'country' => 'required',
-      'name'    => 'required|string',
+      'manufacturer'  => 'required|string', // UUID
+      'rows'          => 'required', //Array of uuids
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -55,19 +74,30 @@ class RestockController extends Controller
     }
 
     $restockData = [
-      'uuid'  => Uuid::uuid4()->toString(),
-      'name' => $request->input('name')
+      'uuid'  => Uuid::uuid4()->toString()
     ];
 
-    $chain = Chain::create($chainData);
+    $restock = Restock::create($restockData);
 
-    $country = Country::where('iso', $request->input('country'))->first();
-    $rel = $country->chains()->save($chain);
+    // Link to manufacturer
+    $manufacturer = Manufacturer::where('uuid', $request->input('manufacturer'))->first();
+    $rel = $manufacturer->orders()->save($restock);
+
+    // Link to article/s
+    foreach ($request->input('rows') as $row) {
+      $article = Article::where('uuid', $row['article'])->first();
+      $rel = $article->restocks()->save($restock);
+      $rel->count = $row['count'];
+      $rel->save();
+    }
+
+    // Get the newly created restock with all the relationships
+    $out = Restock::with('manufacturer', 'articles')->where('uuid', $restock->uuid)->first();
 
     return response()->json([
       'status'    => 201,
-      'data'      => $chain,
-      'heading'   => 'Rate',
+      'data'      => $out,
+      'heading'   => 'Restock',
       'message'   => ['Restock request created.'],
     ], 201);
   }

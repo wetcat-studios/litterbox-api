@@ -63,6 +63,7 @@ class EmailController extends Controller {
       
       // The owner node
       'owner'   => 'required|string',
+      'ownertype' => 'required|string' // Name of type
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -86,35 +87,38 @@ class EmailController extends Controller {
 
     $email = Email::create($emailData);
 
-    // Try finding by parent node
-    $user = User::where('uuid', $request->input('owner'))->first();
-    $customer = Customer::where('uuid', $request->input('owner'))->first();
-    $manufacturer = Manufacturer::where('uuid', $request->input('owner'))->first();
+    if ($request->has('owner') && $request->has('ownertype') && Uuid::isValid($request->input('owner'))) {
+      switch ($request->input('ownertype')) {
+        case 'user':
+          $user = User::where('uuid', $request->input('owner'))->first();
+          $rel = $user->emails()->save($email);
+          $messages[] = 'Email was added to the user';
+          break;
 
-    $messages = [];
+        case 'customer':
+          $customer = Customer::where('uuid', $request->input('owner'))->first();
+          $rel = $customer->emails()->save($email);
+          $messages[] = 'Email was added to the customer';
+          break;
 
-    // Find the correct type of node!
-    if (!!$user && $user->exists) {
-      $rel = $user->emails()->save($email);
-      $messages[] = 'Email was added to the user';
-    } else if (!!$customer && $customer->exists) {
-      $rel = $customer->emails()->save($email);
-      $messages[] = 'Email was added to the customer';
-    } else if (!!$manufacturer && $manufacturer->exists) {
-      $rel = $manufacturer->emails()->save($email);
-      $messages[] = 'Email was added to the manufacturer';
+        case 'manufacturer':
+          $manufacturer = Manufacturer::where('uuid', $request->input('owner'))->first();
+          $rel = $manufacturer->emails()->save($email);
+          $messages[] = 'Email was added to the manufacturer';
+          break;
+      }
     }
 
     // Or if it was not one of the three accepted node types we'll simply send an error!
     else {
-      // Delete the email (no need to keep it in db!)
+      // Remove the address if no owner node was found
       $email->forceDelete();
 
       return response()->json([
         'status'    => 400,
         'data'      => null,
-        'heading'   => 'Email',
-        'messages'  => ["Invalid node type, can't attach the email."]
+        'heading'   => 'Address',
+        'messages'  => ["Invalid node type, can't attach an email."]
       ], 400);
     }
 

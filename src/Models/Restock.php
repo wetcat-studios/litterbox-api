@@ -49,12 +49,12 @@ class Restock extends \Vinelab\NeoEloquent\Eloquent\Model  {
   
   public function manufacturer()
   {
-    return $this->hasOne('Wetcat\Litterbox\Models\Customer', 'HAS_ORDERS');
+    return $this->belongsTo('Wetcat\Litterbox\Models\Manufacturer', 'HAS_ORDERS');
   }
 
-  public function article()
+  public function articles()
   {
-    return $this->hasOne('Wetcat\Litterbox\Models\Article', 'HAS_RESTOCKS');
+    return $this->belongsToMany('Wetcat\Litterbox\Models\Article', 'HAS_RESTOCKS');
   }
 
 }

@@ -7,12 +7,15 @@ use Illuminate\Http\Request;
 use Validator;
 use Mail;
 use Auth;
+use Hash;
 
 use Wetcat\Litterbox\Models\User;
 use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Phone;
 use Wetcat\Litterbox\Models\Segment;
+
+use Wetcat\Litterbox\Auth\Roles as RoleHelper;
 
 use Ramsey\Uuid\Uuid;
 
@@ -70,10 +73,12 @@ class UserController extends Controller {
 
       // Owner node (that is, the node to link this user to)
       'owner'       => 'string', // UUID
-      'owner_type'  => 'string', // Node type
+      'ownertype'   => 'string', // Node type
 
       // Segment node (optional)
       'segment' => 'string', // UUID
+
+      'autoverify' => 'boolean', // Used to determine if we should automverify the user
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -90,6 +95,8 @@ class UserController extends Controller {
 
     $randomPw = str_random(8);
 
+    $roleInt = RoleHelper::getRoleValue($request->input('role'));
+
     $userData = [
       'uuid'      => Uuid::uuid4()->toString(),
       'firstname' => $request->input('firstname'),
@@ -100,16 +107,15 @@ class UserController extends Controller {
       'note'      => $request->input('note'),
 
       'password'  => Hash::make($randomPw),
-      'role'      => 'user',
-      'verified'  => 1,
+      'role'      => $roleInt
     ];
 
     $user = User::create($userData);
 
     $messages = [];
 
-    if ($request->has('owner') && $request->has('owner_type') && Uuid::isValid($request->input('owner'))) {
-      switch ($request->input('owner_type')) {
+    if ($request->has('owner') && $request->has('ownertype') && Uuid::isValid($request->input('owner'))) {
+      switch ($request->input('ownertype')) {
         case 'customer':
           $customer = Customer::where('uuid', $request->input('owner'))->first();
           $rel = $customer->users()->save($user);

@@ -106,16 +106,16 @@ class CustomerController extends Controller {
       'name'          => 'required',
       'number'        => 'required',
       'corporate'     => 'required',
-      'rebate'        => 'number',
+      'rebate'        => 'string',
 
       // The customer segment type (uuid for the node)
-      'customer-segment'  => 'required|string',
+      'customersegment'  => 'required|string',
 
       // Chain validation (just the uuid)
       'chain'         => 'string',
 
       // Chain segment (just the uuid, this is not required!)
-      'chain-segment' => 'string'
+      'chainsegment' => 'string'
     ]);
 
     if ($validator->fails()) {
@@ -161,14 +161,14 @@ class CustomerController extends Controller {
       $rel = $chain->members()->save($customer);
     }
 
-    // Link customer to chain-segment if it exists
-    if ($request->has('chain-segment') && Uuid::isValid($request->input('chain-segment'))) {
-      $chainSegment = Chainsegment::where('uuid', $request->input('chain-segment'))->firstOrFail();
+    // Link customer to chainsegment if it exists
+    if ($request->has('chainsegment') && Uuid::isValid($request->input('chainsegment'))) {
+      $chainSegment = Chainsegment::where('uuid', $request->input('chainsegment'))->firstOrFail();
       $rel = $chainSegment->customers()->save($customer);
     } else {
       $segmentData = [
         'uuid'  => Uuid::uuid4()->toString(),
-        'name'  => $request->input('chain-segment')
+        'name'  => $request->input('chainsegment')
       ];
       $chainSegment = Chainsegment::create($segmentData);
       $rel = $chain->segments()->save($chainSegment);
@@ -176,22 +176,22 @@ class CustomerController extends Controller {
     }
 
 
-    // Link customer to customer-segment
-    if ($request->has('customer-segment') && Uuid::isValid($request->input('customer-segment'))) {
-      $customerSegment = Customersegment::where('uuid', $request->input('customer-segment'))->firstOrFail();
+    // Link customer to customersegment
+    if ($request->has('customersegment') && Uuid::isValid($request->input('customersegment'))) {
+      $customerSegment = Customersegment::where('uuid', $request->input('customersegment'))->firstOrFail();
       $rel = $customerSegment->customers()->save($customer);
     } else {
       $segmentData = [
         'uuid'  => Uuid::uuid4()->toString(),
-        'name'  => $request->input('customer-segment')
+        'name'  => $request->input('customersegment')
       ];
       $customerSegment = Customersegment::create($segmentData);
       $rel = $customerSegment->customers()->save($customer);
     }
 
     // Set the verified by field
-    $admin = User::where('uuid', Auth::user()->uuid)->first();
-    $customer->verifiedBy()->save($admin);
+    //$admin = User::where('uuid', Auth::user()->uuid)->first();
+    //$customer->verifiedBy()->save($admin);
 
     return response()->json([
       'status'    => 201,

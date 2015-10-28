@@ -48,6 +48,9 @@ class LitterboxMiddleware
     // Get the user for this token
     $user = User::where('uuid', $data['uuid'])->first();
     
+    if (is_null($user)) {
+      return $this->sendFailedResponse(['User does not exist.']);
+    }
     // Compare a few key variables to verify the validity of the token
     if (!strcmp($user->uuid, $secret)) {
       return $this->sendFailedResponse(['Token data is incorrect.']);

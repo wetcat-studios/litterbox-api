@@ -84,7 +84,8 @@ class ShippingmethodController extends Controller
     $validator = Validator::make($request->all(), [
       'name'        => 'required|string',
       'owner'       => 'required|string',
-      'restricted'  => 'integer',
+      'ownertype'   => 'required|string',
+      'restricted'  => 'required|boolean',
     ]);
 
     if ($validator->fails()) {
@@ -100,49 +101,51 @@ class ShippingmethodController extends Controller
       ], 400);
     }
 
-    $owner = Segment::where('uuid', $request->input('owner'))->first();
-
     // If the name is an uuid, it already exists!
     if (Uuid::isValid($request->input('name'))) {
-
       $method = Shippingmethod::where('uuid', $request->input('name'))->first();
+    } else {
+      $method = Shippingmethod::where('name', $request->input('name'))->first();
 
-      $rel = $owner->shipping()->save($method);
+      if (!!$method) {
+        // Don't create it if the name already exists
+      } else {
+        $methodData = [
+          'uuid'  => Uuid::uuid4()->toString(),
+          'name' => $request->input('name'),
+          'restricted' => $request->input('restricted'),
+        ];
 
-      return response()->json([
-        'status'    => 200,
-        'data'      => $method,
-        'heading'   => 'Shippingmethod',
-        'message'   => ['Shippingmethod already exists, it was connected.'],
-      ], 200);
-    } 
-
-    // Otherwise create it!
-    else {
-      $restricted = 0;
-      if ($request->has('restricted')) {
-        $restricted = $request->input('restricted');
+        $method = Shippingmethod::create($methodData);
+        $messages[] = 'Shipping method was created';
       }
+    }
 
-      $methodData = [
-        'uuid'  => Uuid::uuid4()->toString(),
-        'name' => $request->input('name'),
-        'restricted' => $restricted,
-      ];
-
-      $method = Shippingmethod::create($methodData);
-
-      $rel = $owner->shipping()->save($method);
-      
+    if ($request->has('owner') && $request->has('ownertype') && Uuid::isValid($request->input('owner'))) {
+      switch ($request->input('ownertype')) {
+        case 'segment':
+          $segment = Segment::where('uuid', $request->input('owner'))->first();
+          $rel = $segment->shipping()->save($method);
+          $messages[] = 'Shipping method was added to the segment';
+          break;
+      }
+    } else {
       return response()->json([
-        'status'    => 201,
-        'data'      => $method,
-        'heading'   => 'Shippingmethod',
-        'message'   => ['Shippingmethod was created.'],
-      ], 201);
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Address',
+        'messages'  => ["Invalid owner node type."]
+      ], 400);
     }
 
 
+    // We made it! Send a success!
+    return response()->json([
+      'status'    => 201,
+      'data'      => $method,
+      'heading'   => 'Address',
+      'messages'  => $messages
+    ], 201);
   }
 
   /**

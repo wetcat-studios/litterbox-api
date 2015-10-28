@@ -86,6 +86,7 @@ class AddressController extends Controller {
 
       // The owner node
       'owner' => 'required|string', // uuid
+      'ownertype' => 'required|string' // Name of type
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -139,12 +140,18 @@ class AddressController extends Controller {
       $city = City::where('uuid', $request->input('city'))->first();
       $rel = $city->addresses()->save($address);
     } else if ($request->has('city')) {
-      $cityData = [
-        'uuid'  => Uuid::uuid4()->toString(),
-        'name'  => $request->input('city'),
-      ];
-      $city = City::create($cityData);
-      $rel = $city->addresses()->save($address);
+      $city = City::where('name', $request->input('city'))->first();
+
+      if (!!$city) {
+        $rel = $city->addresses()->save($address);
+      } else {
+        $cityData = [
+          'uuid'  => Uuid::uuid4()->toString(),
+          'name'  => $request->input('city'),
+        ];
+        $city = City::create($cityData);
+        $rel = $city->addresses()->save($address);
+      }
     }
     
 
@@ -153,20 +160,23 @@ class AddressController extends Controller {
       $county = County::where('uuid', $request->input('county'))->first();
       $rel = $county->addresses()->save($address);
     } else if ($request->has('county')) {
-      $countyData = [
-        'name'  => $request->input('county'),
-      ];
-      $county = County::firstOrCreate($countyData);
-      if (!isset($county->uuid)) {
-        $county->uuid = Uuid::uuid4()->toString();
-        $county->save();
+      $county = County::where('name', $request->input('county'))->first();
+
+      if (!!$county) {
+        $rel = $county->addresses()->save($address);
+      } else {
+        $countyData = [
+          'uuid'  => Uuid::uuid4()->toString(),
+          'name'  => $request->input('county'),
+        ];
+        $county = County::create($countyData);
+        $rel = $county->addresses()->save($address);
       }
-      $rel = $county->addresses()->save($address);
     }
 
 
-    if ($request->has('owner') && $request->has('owner_type') && Uuid::isValid($request->input('owner'))) {
-      switch ($request->input('owner_type')) {
+    if ($request->has('owner') && $request->has('ownertype') && Uuid::isValid($request->input('owner'))) {
+      switch ($request->input('ownertype')) {
         case 'user':
           $user = User::where('uuid', $request->input('owner'))->first();
           $rel = $user->addresses()->save($address);
