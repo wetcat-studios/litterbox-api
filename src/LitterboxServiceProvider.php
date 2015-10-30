@@ -75,6 +75,10 @@ class LitterboxServiceProvider extends ServiceProvider
     $this->commands($this->commands);
 
     //$this->registerLitterbox();
+
+    // Register the other providers
+    $this->app->register(\Wetcat\Litterbox\Providers\CreatedByProvider::class);
+    $this->app->register(\Wetcat\Litterbox\Providers\DeletedByProvider::class);
   }
 
 

@@ -2,7 +2,7 @@
 
 use Closure;
 
-
+use Wetcat\Litterbox\Auth\Auth as AuthHelper;
 
 class Auth extends LitterboxMiddleware
 {
@@ -19,7 +19,11 @@ class Auth extends LitterboxMiddleware
     $token = $request->header('X-Litterbox-Token');
     
     // Verify that the user is authenticated using helper method
-    $this->verify($token);
+    try {
+      AuthHelper::verify($token);
+    } catch (\Exception $exception) {
+      return $this->sendFailedResponse(['You need to be authenticated to access this resource.']);
+    }
     
     return $next($request);
   }

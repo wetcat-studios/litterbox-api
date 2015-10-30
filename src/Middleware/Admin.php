@@ -3,6 +3,7 @@
 use Closure;
 
 use Wetcat\Litterbox\Auth\Roles as RoleHelper;
+use Wetcat\Litterbox\Auth\Auth as AuthHelper;
 
 class Admin extends LitterboxMiddleware
 {
@@ -19,7 +20,12 @@ class Admin extends LitterboxMiddleware
     $token = $request->header('X-Litterbox-Token');
     
     // Verify that the user is authenticated using helper method
-    $role = $this->verify($token);
+    try {
+      $role = AuthHelper::verify($token);
+    } catch (\Exception $exception) {
+      $this->sendFailedResponse($exception->getMessage());
+    }
+    
     
     // Verify that the user has the correct role
     if ( !RoleHelper::verify($role, 'admin') ){
