@@ -163,7 +163,7 @@ class UserController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show($id, Request $request)
   {
     if ($request->has('rel')) {
       $user = User::with($rels)->where('uuid', $id)->get();
