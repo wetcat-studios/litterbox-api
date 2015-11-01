@@ -16,6 +16,7 @@ use Wetcat\Litterbox\Models\Phone;
 use Wetcat\Litterbox\Models\Segment;
 
 use Wetcat\Litterbox\Auth\Roles as RoleHelper;
+use Wetcat\Litterbox\Auth\Auth as AuthHelper;
 
 use Ramsey\Uuid\Uuid;
 
@@ -196,9 +197,36 @@ class UserController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update(Request $request, $id)
   {
-    //
+    // Make sure the user is either superadmin or editing same user as is logged in
+    
+    $token = $request->header('X-Litterbox-Token');
+    
+    // Verify that the user is authenticated using helper method
+    $user = AuthHelper::getUser($token);
+    if (!RoleHelper::verify($user->role, 'admin') && strcmp($user->uuid, $id) !== 0) {
+      return response()->json([
+        'status'    => 401,
+        'data'      => null,
+        'heading'   => 'User',
+        'messages'  => ['You don\'t have permission to change this users data.']
+      ], 401);
+    }
+    
+    // Ignore password and email
+    $updatedData= [];
+    foreach ($request->except('password', 'email') as $key => $value) {
+      $updatedData[$key] = $value;
+    }
+    $user->update($updatedData);
+    
+    return response()->json([
+      'status'    => 200,
+      'data'      => $user,
+      'heading'   => 'User',
+      'messages'  => null
+    ], 200);
   }
 
   /**
