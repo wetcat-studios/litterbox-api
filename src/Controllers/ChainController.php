@@ -166,21 +166,6 @@ class ChainController extends Controller {
       }
     }
 
-    if ($request->has('formatted')) {
-      if ($request->input('formatted') === 'semantic') {
-        $out = [];
-        $out[] = [
-          'name' => (is_object($chain) ? $chain->name : $chain['name']),
-          'value' => (is_object($chain) ? $chain->uuid : $chain['uuid'])
-        ];
-      
-        return response()->json([
-          'success' => true,
-          'results' => $out
-        ]);
-      } 
-    }
-
     return response()->json([
       'status'    => 200,
       'data'      => $chain,

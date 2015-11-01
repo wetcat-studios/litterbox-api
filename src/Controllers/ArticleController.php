@@ -323,7 +323,18 @@ class ArticleController extends Controller {
    */
   public function show($id)
   {
-    //
+    if ($request->has('rel')) {
+      $article = Article::with($rels)->where('uuid', $id)->get();
+    } else {
+      $article = Article::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $article,
+      'heading'   => 'Article',
+      'messages'  => null
+    ], 200);
   }
 
   /**

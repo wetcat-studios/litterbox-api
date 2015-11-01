@@ -141,9 +141,20 @@ class PictureController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    if ($request->has('rel')) {
+      $picture = Picture::with($rels)->where('uuid', $id)->get();
+    } else {
+      $picture = Picture::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $picture,
+      'heading'   => 'Picture',
+      'messages'  => null
+    ], 200);
   }
 
   /**

@@ -117,9 +117,20 @@ class CustomerSegmentController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    if ($request->has('rel')) {
+      $customersegment = Customersegment::with($rels)->where('uuid', $id)->get();
+    } else {
+      $customersegment = Customersegment::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $customersegment,
+      'heading'   => 'Customersegment',
+      'messages'  => null
+    ], 200);
   }
 
   /**

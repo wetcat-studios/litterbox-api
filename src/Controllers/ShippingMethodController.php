@@ -154,9 +154,20 @@ class ShippingmethodController extends Controller
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-      //
+    if ($request->has('rel')) {
+      $shippingmethod = Shippingmethod::with($rels)->where('uuid', $id)->get();
+    } else {
+      $shippingmethod = Shippingmethod::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $shippingmethod,
+      'heading'   => 'Shippingmethod',
+      'messages'  => null
+    ], 200);
   }
 
   /**

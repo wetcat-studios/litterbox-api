@@ -159,9 +159,20 @@ class BrandController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    if ($request->has('rel')) {
+      $brand = Brand::with($rels)->where('uuid', $id)->get();
+    } else {
+      $brand = Brand::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $brand,
+      'heading'   => 'Brand',
+      'messages'  => null
+    ], 200);
   }
 
   /**

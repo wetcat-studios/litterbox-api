@@ -119,9 +119,20 @@ class SegmentController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    if ($request->has('rel')) {
+      $segment = Segment::with($rels)->where('uuid', $id)->get();
+    } else {
+      $segment = Segment::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $segment,
+      'heading'   => 'Segment',
+      'messages'  => null
+    ], 200);
   }
 
   /**

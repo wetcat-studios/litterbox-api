@@ -115,9 +115,20 @@ class CityController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    if ($request->has('rel')) {
+      $city = City::with($rels)->where('uuid', $id)->get();
+    } else {
+      $city = City::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $city,
+      'heading'   => 'City',
+      'messages'  => null
+    ], 200);
   }
 
   /**

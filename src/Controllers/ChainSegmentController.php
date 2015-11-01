@@ -39,22 +39,6 @@ class ChainSegmentController extends Controller {
       });
     }
 
-    if ($request->has('formatted')) {
-      if ($request->input('formatted') === 'semantic') {
-        $out = [];
-        foreach ($segments as $segment) {
-          $out[] = [
-            'name' => (is_object($segment) ? $segment->name : $segment['name']),
-            'value' => (is_object($segment) ? $segment->uuid : $segment['uuid'])
-          ];
-        }
-        return response()->json([
-          'success' => true,
-          'results' => $out
-        ]);
-      } 
-    }
-
     return response()->json([
       'status'    => 200,
       'data'      => $segments,
@@ -126,9 +110,20 @@ class ChainSegmentController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    if ($request->has('rel')) {
+      $chain = Chain::with($rels)->where('uuid', $id)->get();
+    } else {
+      $chain = Chain::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $chain,
+      'heading'   => 'Chain',
+      'messages'  => null
+    ], 200);
   }
 
   /**

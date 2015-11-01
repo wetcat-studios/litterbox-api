@@ -54,9 +54,14 @@ class RestockSuggestionController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    return response()->json([
+      'status'    => 200,
+      'data'      => null,
+      'heading'   => 'Restock',
+      'messages'  => ['Not implemented yet']
+    ], 200);
   }
 
   /**

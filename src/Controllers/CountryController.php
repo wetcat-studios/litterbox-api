@@ -97,9 +97,20 @@ class CountryController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    if ($request->has('rel')) {
+      $country = Country::with($rels)->where('uuid', $id)->get();
+    } else {
+      $country = Country::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $country,
+      'heading'   => 'Country',
+      'messages'  => null
+    ], 200);
   }
 
   /**

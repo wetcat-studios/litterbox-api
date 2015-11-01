@@ -187,9 +187,20 @@ class BatchController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-    //
+    if ($request->has('rel')) {
+      $batch = Batch::with($rels)->where('uuid', $id)->get();
+    } else {
+      $batch = Batch::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $batch,
+      'heading'   => 'Batch',
+      'messages'  => null
+    ], 200);
   }
 
   /**

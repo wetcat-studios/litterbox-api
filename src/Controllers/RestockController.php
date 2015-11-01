@@ -108,9 +108,20 @@ class RestockController extends Controller
    * @param  int  $id
    * @return Response
    */
-  public function show($id)
+  public function show(Request $request, $id)
   {
-      //
+    if ($request->has('rel')) {
+      $restock = Restock::with($rels)->where('uuid', $id)->get();
+    } else {
+      $restock = Restock::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $restock,
+      'heading'   => 'Restock',
+      'messages'  => null
+    ], 200);
   }
 
   /**

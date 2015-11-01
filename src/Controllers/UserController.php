@@ -173,7 +173,7 @@ class UserController extends Controller {
 
     return response()->json([
       'status'    => 200,
-      'data'      => [$user],
+      'data'      => $user,
       'heading'   => 'User',
       'messages'  => null
     ], 200);
