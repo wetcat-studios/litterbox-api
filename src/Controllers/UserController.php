@@ -214,18 +214,23 @@ class UserController extends Controller {
       ], 401);
     }
     
+    $messages = ['Updated attributes'];
+    
     // Ignore password and email
-    $updatedData= [];
+    //$updatedData = [];
     foreach ($request->except('password', 'email') as $key => $value) {
-      $updatedData[$key] = $value;
+      //$updatedData[$key] = $value;
+      $user->$key = $value;
+      $messages[] = $key;
     }
-    $user->update($updatedData);
+    //$user->update($updatedData);
+    $user->save();
     
     return response()->json([
       'status'    => 200,
       'data'      => $user,
       'heading'   => 'User',
-      'messages'  => null
+      'messages'  => $messages
     ], 200);
   }
 
