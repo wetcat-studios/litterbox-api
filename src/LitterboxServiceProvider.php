@@ -79,6 +79,11 @@ class LitterboxServiceProvider extends ServiceProvider
     // Register the other providers
     $this->app->register(\Wetcat\Litterbox\Providers\CreatedByProvider::class);
     $this->app->register(\Wetcat\Litterbox\Providers\DeletedByProvider::class);
+
+    // Register the required packages providers
+    $this->app->register(\Vinelab\NeoEloquent\NeoEloquentServiceProvider::class);
+    $this->app->register(\Barryvdh\Cors\ServiceProvider::class);
+    $this->app->register(\Intervention\Image\ImageServiceProvider::class);
   }
 
 

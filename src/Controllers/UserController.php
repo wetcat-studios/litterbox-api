@@ -165,7 +165,18 @@ class UserController extends Controller {
    */
   public function show($id)
   {
-    //
+    if ($request->has('rel')) {
+      $user = User::with($rels)->where('uuid', $id)->get();
+    } else {
+      $user = User::where('uuid', $id)->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => [$user],
+      'heading'   => 'User',
+      'messages'  => null
+    ], 200);
   }
 
   /**

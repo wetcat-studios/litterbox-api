@@ -6,12 +6,9 @@ This assumes you've already installed Laravel 5.1.19 (neoeloquent is not compati
 
 1. Install package with `composer require wetcat/litterbox-api dev-master`
 
-2. Add providers
+2. Add provider
 
 ```php
-Vinelab\NeoEloquent\NeoEloquentServiceProvider::class,
-Barryvdh\Cors\ServiceProvider::class,
-Intervention\Image\ImageServiceProvider::class,
 Wetcat\Litterbox\LitterboxServiceProvider::class,
 ```
 
@@ -62,11 +59,11 @@ protected $routeMiddleware = [
 return [
   'supportsCredentials' => false,
   'allowedOrigins' => ['*'],
-  'allowedHeaders' => ['Content-Type', 'Accept', 'X-Auth-Token'],
-  'allowedMethods' => ['GET', 'POST', 'PUT',  'DELETE'],
+  'allowedHeaders' => ['Content-Type', 'Accept', 'X-Litterbox-Token'],
+  'allowedMethods' => ['GET', 'POST', 'PUT',  'DELETE', 'OPTIONS'],
   'exposedHeaders' => [],
   'maxAge' => 0,
-  'hosts' => [],
+  'hosts' => [],  
 ]
 ```
 
