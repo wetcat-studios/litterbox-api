@@ -16,7 +16,7 @@
     "ramsey/uuid": "^3.0",
     "vinelab/neoeloquent": "^1.2",
     "intervention/image": "^2.3",
-		"wetcat/fortie": "dev-master"
+		"wetcat/fortie": "@dev"
   },
   "require-dev": {
     "phpunit/phpunit": "4.0.*"
