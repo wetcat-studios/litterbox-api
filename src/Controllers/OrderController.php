@@ -56,10 +56,8 @@ class OrderController extends Controller {
   public function store(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'customer'      => 'required|string',
-      'articles'      => 'required|array',
-      'articleCounts' => 'required|array',
-      'numArticles'   => 'required|integer',
+      'customer'  => 'required|string',
+      'rows'      => 'required', // Each rows is a uuid and a count
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -73,48 +71,34 @@ class OrderController extends Controller {
         'messages'  => $messages
       ], 400);
     }
+    
+    $orderData = [
+      'uuid'  => Uuid::uuid4()->toString()
+    ];
 
+    $order = Order::create($orderData);
+    
+    // Link to customer
     $customer = Customer::where('uuid', $request->input('customer'))->first();
+    $rel = $customer->orders()->save($order);
 
-    if (!!$customer) {
-      $orderData = [
-        'uuid'    => Uuid::uuid4()->toString(),
-        'number'  => Uuid::uuid1()->toString(),
-        'numArticles' => $request->input('numArticles'),
-      ];
-
-      $order = Order::create($orderData);
-      $rel = $customer->orders()->save($order);
-
-      for ($i = 0; $i < count($request->input('articles')); $i++) {
-        $article = Article::where('uuid', $request->input('articles')[$i])->first();
-        if (!!$article) {
-          $rel = $article->orders()->save($order);
-
-          $rel->count = $request->input('articleCounts')[$i];
-          $rel->save();
-        }
-      }
-
-      return response()->json([
-        'status'    => 201,
-        'data'      => $order,
-        'heading'   => 'Order',
-        'message'   => ['Order created.'],
-      ], 201);
-    } 
-
-    // Failed to find customer
-    else {
-      $messages[] = 'Could not find customer.';
+    // Link to article/s
+    foreach ($request->input('rows') as $row) {
+      $article = Article::where('uuid', $row['article'])->first();
+      $rel = $article->orders()->save($order);
+      $rel->count = $row['count'];
+      $rel->save();
     }
+    
+    // Get the newly created restock with all the relationships
+    $out = Order::with('customer', 'articles')->where('uuid', $order->uuid)->first();
 
     return response()->json([
-      'status'    => 400,
-      'data'      => null,
+      'status'    => 201,
+      'data'      => $out,
       'heading'   => 'Order',
-      'messages'  => $messages
-    ], 400);
+      'message'   => ['Order request created.'],
+    ], 201);
   }
 
   /**
