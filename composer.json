@@ -15,8 +15,7 @@
     "neoxygen/neoclient": "^3.3",
     "ramsey/uuid": "^3.0",
     "vinelab/neoeloquent": "^1.2",
-    "intervention/image": "^2.3",
-		"wetcat/fortie": "@dev"
+    "intervention/image": "^2.3"
   },
   "require-dev": {
     "phpunit/phpunit": "4.0.*"

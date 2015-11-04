@@ -19,7 +19,7 @@ class InvoiceController extends Controller
    */
   public function index (Request $request)
   {
-    $invoices = $this->fortie->invoices()->all();
+    $invoices = []; // $this->fortie->invoices()->all();
     
     return response()->json([
       'status'    => 200,
