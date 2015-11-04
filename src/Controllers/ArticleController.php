@@ -141,7 +141,8 @@ class ArticleController extends Controller {
       'collipershiplav'    => 'required|integer',
       
       // Nutrients
-      'energy'        => 'required',
+      'kj'            => 'required',
+      'kcal'          => 'required',
       'fat'           => 'required',
       'saturatedfat'  => 'required',
       'carbs'         => 'required',
