@@ -188,14 +188,14 @@ class ArticleController extends Controller {
     if (Uuid::isValid($request->input('category'))) {
       $category = Category::where('uuid', $request->input('category'))->first();
       $rel = $category->articles()->save($article);
-      $rel->type = $request->input('primary');
+      $rel->type = 'primary';
       $rel->save();
     } else {
       // Or if it's a string - create
       $category = Category::where('name', $request->input('category'))->first();
       if (!!$category) {
         $rel = $category->articles()->save($article);
-        $rel->type = $request->input('primary');
+        $rel->type = 'primary';
         $rel->save();
       } else {
         $category = Category::create([
@@ -203,7 +203,7 @@ class ArticleController extends Controller {
           'name'  => $request->input('category')
         ]);
         $rel = $category->articles()->save($article);
-        $rel->type = $request->input('primary');
+        $rel->type = 'primary';
         $rel->save();
       }
     }
@@ -215,14 +215,14 @@ class ArticleController extends Controller {
         if (Uuid::isValid($cat)) {
           $category = Category::where('uuid', $cat)->first();
           $rel = $category->articles()->save($article);
-          $rel->type = $request->input('secondary')[$i];
+          $rel->type = 'secondary';
           $rel->save();
         } else {
           // Or if it's a string - create
           $category = Category::where('name', $cat)->first();
           if (!!$category) {
             $rel = $category->articles()->save($article);
-            $rel->type = $request->input('secondary')[$i];
+            $rel->type = 'secondary';
             $rel->save();
           } else {
             $category = Category::create([
@@ -230,7 +230,7 @@ class ArticleController extends Controller {
               'name'  => $cat
             ]);
             $rel = $category->articles()->save($article);
-            $rel->type = $request->input('secondary')[$i];
+            $rel->type = 'secondary';
             $rel->save();
           }
         }

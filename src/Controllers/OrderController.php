@@ -90,7 +90,7 @@ class OrderController extends Controller {
       $rel->save();
     }
     
-    // Get the newly created restock with all the relationships
+    // Get the newly created order with all the relationships
     $out = Order::with('customer', 'articles')->where('uuid', $order->uuid)->first();
 
     return response()->json([
