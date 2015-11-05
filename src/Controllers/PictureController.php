@@ -99,7 +99,10 @@ class PictureController extends Controller {
         ->save($dir . '/' . $filename)
         // thumbnail
         //->fit('48', '48')
-        ->resize($width, $height)
+        ->resize($width, $height, function ($constraint) {
+          $constraint->aspectRatio();
+          $constraint->upsize();
+        })
         ->save($thumbdir . '/' . $thumbname)
         ->destroy();
 
