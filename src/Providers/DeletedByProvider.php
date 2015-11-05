@@ -11,6 +11,7 @@ use Wetcat\Litterbox\Models\Category;
 use Wetcat\Litterbox\Models\Chain;
 use Wetcat\Litterbox\Models\Chainsegment;
 use Wetcat\Litterbox\Models\City;
+use Wetcat\Litterbox\Models\County;
 use Wetcat\Litterbox\Models\Country;
 use Wetcat\Litterbox\Models\Currency;
 use Wetcat\Litterbox\Models\Customer;
@@ -98,6 +99,13 @@ class DeletedByProvider extends ServiceProvider
     });
 
     City::deleted(function ($model) {
+      $token = Request::header('X-Litterbox-Token');
+      $secret = TokenHelper::getSecret($token);
+      $user = User::where('token', $secret)->first();
+      $rel = $model->deletedBy()->save($user);
+    });
+
+    County::deleted(function ($model) {
       $token = Request::header('X-Litterbox-Token');
       $secret = TokenHelper::getSecret($token);
       $user = User::where('token', $secret)->first();

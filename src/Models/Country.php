@@ -56,7 +56,7 @@ class Country extends \Vinelab\NeoEloquent\Eloquent\Model  {
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Chain', 'HAS_CHAIN');
   }
-
+  
   public function addresses()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Address', 'HAS_ADDRESS');

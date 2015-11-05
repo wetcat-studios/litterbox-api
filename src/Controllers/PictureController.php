@@ -82,18 +82,24 @@ class PictureController extends Controller {
     $thumbdir = public_path() . '/uploads/' . $mime . '/thumbs/';
     $thumbname = $uuid . "_thumb.{$ext}";
 
+    $arr = getimagesize($request->file('picture'));
+    $width = ($arr[0] > $arr[1] ? $arr[0] : null);
+    $height = ($arr[1] > $arr[0] ? $arr[1] : null);
+    
     //$uploadResult = $request->file('picture')->move($dir, $filename);
 
     try {
       File::makeDirectory($dir, 0775, true, true);
       File::makeDirectory($thumbdir, 0775, true, true);
 
+      
       // upload new image
       Image::make($request->file('picture'))
         // original
         ->save($dir . '/' . $filename)
         // thumbnail
-        ->fit('128', '128')
+        //->fit('48', '48')
+        ->resize($width, $height)
         ->save($thumbdir . '/' . $thumbname)
         ->destroy();
 
