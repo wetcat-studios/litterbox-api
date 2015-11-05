@@ -83,8 +83,8 @@ class PictureController extends Controller {
     $thumbname = $uuid . "_thumb.{$ext}";
 
     $arr = getimagesize($request->file('picture'));
-    $width = ($arr[0] > $arr[1] ? $arr[0] : null);
-    $height = ($arr[1] > $arr[0] ? $arr[1] : null);
+    $width = ($arr[0] > $arr[1] ? '48' : null);
+    $height = ($arr[1] > $arr[0] ? '48' : null);
     
     //$uploadResult = $request->file('picture')->move($dir, $filename);
 
