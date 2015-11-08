@@ -17,6 +17,21 @@ class AppController extends Controller {
     $this->settings = $settings;
   }
 
+
+  /**
+   * Read application wide settings
+   */
+  public function index (Request $request)
+  {
+    return response()->json([
+      'status'    => 200,
+      'data'      => $this->settings->all(),
+      'heading'   => 'Settings',
+      'messages'  => []
+    ], 200);
+  }
+  
+
   /**
    * Store application wide settings.
    */
@@ -54,19 +69,6 @@ class AppController extends Controller {
       'heading'   => 'Settings',
       'messages'  => []
     ], 201);
-  }
-
-  /**
-   * Read application wide settings
-   */
-  public function read (Request $request)
-  {
-    return response()->json([
-      'status'    => 200,
-      'data'      => $this->settings->all(),
-      'heading'   => 'Settings',
-      'messages'  => []
-    ], 200);
   }
 
 }
