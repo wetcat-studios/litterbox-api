@@ -46,6 +46,7 @@ Route::group(['middleware' => ['cors', 'litterbox-auth']], function ()
   Route::resource('segments', 'Wetcat\Litterbox\Controllers\SegmentController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('shippingmethods', 'Wetcat\Litterbox\Controllers\ShippingmethodController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('users', 'Wetcat\Litterbox\Controllers\UserController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+  Route::resource('app', 'Wetcat\Litterbox\Controllers\AppController', ['only' => ['index', 'store']]);
 
   Route::get('customers/number/{name}', function ($name) {
     return response()->json([
@@ -58,5 +59,4 @@ Route::group(['middleware' => ['cors', 'litterbox-auth']], function ()
 
   // Special route for validating customers
   Route::post('customers/verify', ['uses' => 'Wetcat\Litterbox\Controllers\CustomerController@verify']);
-  
 });

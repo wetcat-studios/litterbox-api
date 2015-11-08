@@ -84,6 +84,7 @@ class LitterboxServiceProvider extends ServiceProvider
     $this->app->register(\Vinelab\NeoEloquent\NeoEloquentServiceProvider::class);
     $this->app->register(\Barryvdh\Cors\ServiceProvider::class);
     $this->app->register(\Intervention\Image\ImageServiceProvider::class);
+    $this->app->register(\anlutro\LaravelSettings\ServiceProvider::class);
   }
 
 
