@@ -30,7 +30,7 @@ class AppController extends Controller {
       'messages'  => []
     ], 200);
   }
-  
+
 
   /**
    * Store application wide settings.
@@ -61,6 +61,8 @@ class AppController extends Controller {
     if ($request->has('expectedmargin')) {
       $this->settings->set('expectedmargin', $request->input('expectedmargin'));
     }
+
+    $this->settings->save();
 
     // We made it! Send a success!
     return response()->json([
