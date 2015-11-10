@@ -182,7 +182,7 @@ class ArticleController extends Controller {
       ], 400);
     }
 
-    $articleData = $request->except('filename', 'category', 'categories', 'segment', 'brand', 'manufacturer', 'ingredients');
+    $articleData = $request->except('filename', 'category', 'categories', 'segment', 'brand', 'manufacturer', 'ingredients', 'customers');
     $articleData['uuid'] = Uuid::uuid4()->toString();
 
     // Create article (the model will select which values we will fill with...)
