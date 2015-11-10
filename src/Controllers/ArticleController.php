@@ -99,46 +99,6 @@ class ArticleController extends Controller {
     // Not used
   }
 
-:
-name:Test
-number:1
-manufacturernumber:test-1
-category:Testkat
-categories:
-segment:7239a0b5-46e2-493d-bfef-cf8dfe9500dd
-brand:de52708a-54fe-4e38-beaf-090cb80e5fca
-manufacturer:e6dce8cd-f0ad-4bd7-b2be-815609ff2bf2
-ean:1111
-kj:100
-kcal:100
-fat:100
-saturatedfat:100
-carbs:100
-sugar:100
-fibers:100
-proteins:100
-salt:100
-ingredients:
-price:5
-discountrate:10
-packageweight:20
-packagewidth:20
-packagelength:20
-packageheight:20
-colliweight:20
-colliwidth:20
-collilength:20
-colliheight:20
-packagepercolli:6
-collipereupallet:100
-collipereulav:100
-colliperhalfpallet:100
-colliperhalflav:100
-collipershippallet:100
-collipershiplav:100
-restockthreshold:100
-restockamount:1000
-
   /**
    * Store a newly created resource in storage.
    *
@@ -218,7 +178,7 @@ restockamount:1000
       ], 400);
     }
 
-    $articleData = $request->except('filename', 'category', 'categories', 'segment', 'brand', 'manufacturer');
+    $articleData = $request->except('filename', 'category', 'categories', 'segment', 'brand', 'manufacturer', 'ingredients');
     $articleData['uuid'] = Uuid::uuid4()->toString();
 
     // Create article (the model will select which values we will fill with...)
