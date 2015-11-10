@@ -15,6 +15,7 @@ use Wetcat\Litterbox\Models\Currency;
 use Wetcat\Litterbox\Models\Picture;
 use Wetcat\Litterbox\Models\Segment;
 use Wetcat\Litterbox\Models\Ingredient;
+use Wetcat\Litterbox\Models\Customer;
 
 use Ramsey\Uuid\Uuid;
 
@@ -164,6 +165,9 @@ class ArticleController extends Controller {
       // Manufacturer validation
       'manufacturer'     => 'required|string',
       'manufacturernumber' => 'required|string',
+      
+      // Customer links
+      'customers'   => 'string', // UUID for the selected customers
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -233,6 +237,20 @@ class ArticleController extends Controller {
             $rel->type = 'secondary';
             $rel->save();
           }
+        }
+      }
+    }
+    
+    // Find and connect to customers
+    if ($request->has('customers')) {
+      $customers = explode(',', $request->input('customers'));
+      foreach ($customers as $customer) {
+        if (Uuid::isValid($customer)) {
+          $customerNode = Customer::where('uuid', $customer)->first();
+          $rel = $customerNode->articles()->save($article);
+          $rel->save();
+        } else {
+          // Can't be anything but a valid UUID!'
         }
       }
     }

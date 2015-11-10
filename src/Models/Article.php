@@ -102,6 +102,11 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
   {
     return $this->belongsToMany('Wetcat\Litterbox\Models\Campaign', 'HAS_CAMPAIGN');
   }
+
+  public function customers()
+  {
+    return $this->belongsToMany('Wetcat\Litterbox\Models\Customer', 'HAS_CUSTOMER');
+  }
   
   // Helper methods for calculating the amount of items in stock
 

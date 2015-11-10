@@ -72,9 +72,11 @@ class BatchController extends Controller {
   public function store(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'number'    => 'required',
-      'article'   => 'required|string',
-      'count'     => 'required|integer'
+      'number'        => 'required',
+      'article'       => 'required|string',
+      'count'         => 'required|integer',
+      'date'          => 'required',
+      'lastdelivery'  => 'required',
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -90,8 +92,10 @@ class BatchController extends Controller {
     }
 
     $batchData = [
-      'uuid'  => Uuid::uuid4()->toString(),
+      'uuid'    => Uuid::uuid4()->toString(),
       'number'  => $request->input('number'),
+      'date'    => $request->input('date'),
+      'lastdelivery'  => $request->input('lastdelivery'),
     ];
 
     $batch = Batch::create($batchData);
@@ -102,6 +106,8 @@ class BatchController extends Controller {
     $rel->count = $request->input('count');
     $rel->save();
 
+/*
+Don't know what this is...
     for ($i = 0; $i < count($request->input('article')); $i++) {
       $article = Article::where('uuid', $request->input('article')[$i])->first();
       if (!!$article) {
@@ -111,6 +117,7 @@ class BatchController extends Controller {
         $rel->save();
       }
     }
+*/
 
     return response()->json([
       'status'    => 201,

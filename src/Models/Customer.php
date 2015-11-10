@@ -96,4 +96,9 @@ class Customer extends \Vinelab\NeoEloquent\Eloquent\Model  {
     return $this->hasOne('Wetcat\Litterbox\Models\Picture', 'HAS_PICTURE');
   }
 
+  public function articles()
+  {
+    return $this->hasMany('Wetcat\Litterbox\Models\Article', 'HAS_CUSTOMER');
+  }
+
 }
