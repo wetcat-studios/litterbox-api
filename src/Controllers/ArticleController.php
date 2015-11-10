@@ -270,7 +270,8 @@ class ArticleController extends Controller {
     $manufacturer = Manufacturer::where('uuid', $manufacturerId)->firstOrFail();
     $relation = $manufacturer->articles()->save($article);
     
-    $relation->number = $request->input('manufacturer_number');
+    // Save the number to the relation
+    $relation->number = $request->input('manufacturernumber');
     $relation->save();
 
     // Find and connect to Currency

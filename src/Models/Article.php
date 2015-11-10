@@ -25,15 +25,13 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
   use SoftDeletes;
 
 	protected $label = 'Article';
-
+    
 	protected $fillable = [
-    'uuid', 'name', 'number', 'ean', 'price', 'discountrate', 'restock_threshold', 'restock_amount', 'expired', 
-    'package_weight', 'package_width', 'package_length', 'package_height',
-    'colli_weight', 'colli_width', 'colli_length', 'colli_height',
-    'package_per_colli', 'colli_per_eu_pallet', 'colli_per_eu_lav', 'colli_per_half_pallet', 'colli_per_half_lav',
-    'colli_per_ship_pallet', 'colli_per_ship_lav',
-    'nutrients_energy', 'nutrients_fat', 'nutrients_saturatedfat', 'nutrients_carbs', 'nutrients_sugar', 
-    'nutrients_fibers', 'nutrients_protein', 'nutrients_salt',
+    'name', 'number', 'ean', 'price', 'discountrate', 'restockthreshold', 'restockamount',
+    'packageweight', 'packagewidth', 'packagelength', 'packageheight',
+    'colliweight', 'colliwidth', 'collilength', 'colliheight',
+    'packagepercolli', 'collipereupallet', 'collipereulav', 'colliperhalfpallet', 'colliperhalflav', 'collipershippallet', 'collipershiplav',
+    'kj', 'kcal', 'fat', 'saturatedfat', 'carbs', 'sugar', 'fibers', 'proteins', 'salt',
 	];
   
   protected $hidden = [
@@ -105,7 +103,7 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   public function customers()
   {
-    return $this->belongsToMany('Wetcat\Litterbox\Models\Customer', 'HAS_CUSTOMER');
+    return $this->belongsToMany('Wetcat\Litterbox\Models\Customer', 'HAS_ARTICLE');
   }
   
   // Helper methods for calculating the amount of items in stock
