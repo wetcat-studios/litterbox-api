@@ -95,9 +95,11 @@ class RateController extends Controller {
     // Connect the rate to the currency
     $rel = $currency->rates()->save($rate);
 
+    $out = Rate::with('currency')->where('uuid', $rate->uuid)->first();
+
     return response()->json([
       'status'  => 200,
-      'data'    => null,
+      'data'    => $out,
       'heading'   => 'Rate',
       'messages' => ['Added new rate ('.$rate->rate.') to '.$currency->name]
     ], 200);

@@ -173,7 +173,40 @@ class CurrencyController extends Controller {
    */
   public function update($uuid)
   {
-
+    $validator = Validator::make($request->all(), [
+      'name' => 'string',
+    ]);
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Currency',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $currency = Currency::where('uuid', $uuid)->first();
+    
+    if (!!$currency) {
+      
+      if ($request->has('name')) {
+        $currency->name = $request->input('name');
+      }
+      
+      $currency->save();
+      
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Currency',
+        'messages'  => ['Currency not found.']
+      ], 400);
+    }
   }
 
   /**
