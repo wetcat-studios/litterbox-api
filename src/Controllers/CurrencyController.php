@@ -171,7 +171,7 @@ class CurrencyController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($uuid)
+  public function update(Request $request, $uuid)
   {
     $validator = Validator::make($request->all(), [
       'name' => 'string',
