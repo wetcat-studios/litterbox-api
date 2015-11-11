@@ -40,6 +40,9 @@ class AddressController extends Controller {
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
       $addresses = Address::with($rels)->get();
+      
+      //$edge = $location->user()->edge($location->user);
+      
     } else {
       $addresses = Address::all();
     }

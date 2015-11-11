@@ -168,6 +168,12 @@ class ArticleController extends Controller {
       
       // Customer links
       'customers'   => 'string', // UUID for the selected customers
+      
+      // These are calculated once when the article is created, they can also
+      // be updated whenever certain variables in the system are changed.
+      'productCost' => 'numeric|required', 
+      'unitPrice'   => 'numeric|required',
+      'salesPrice'  => 'numeric|required', 
     ]);
     if ($validator->fails()) {
       $messages = [];
