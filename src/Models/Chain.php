@@ -27,7 +27,7 @@ class Chain extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Chain';
 
 	protected $fillable = [
-   'uuid', 'name',
+   'uuid', 'name', 'corporate',
 	];
   
   protected $hidden = [

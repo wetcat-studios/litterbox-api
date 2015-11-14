@@ -85,6 +85,7 @@ class ChainController extends Controller {
     $validator = Validator::make($request->all(), [
       'country'   => 'required|string', // Either UUID or iso
       'name'      => 'required|string',
+      'corporate' => 'string', // Optional corporate id
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -100,8 +101,9 @@ class ChainController extends Controller {
     }
 
     $chainData = [
-      'uuid'  => Uuid::uuid4()->toString(),
-      'name' => $request->input('name')
+      'uuid'      => Uuid::uuid4()->toString(),
+      'name'      => $request->input('name'),
+      'corporate' => $request->input('corporate'),
     ];
 
     $chain = Chain::create($chainData);
