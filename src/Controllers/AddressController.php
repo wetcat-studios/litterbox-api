@@ -13,6 +13,7 @@ use Wetcat\Litterbox\Models\User;
 use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\City;
+use Wetcat\Litterbox\Models\Chain;
 
 use Ramsey\Uuid\Uuid;
 
