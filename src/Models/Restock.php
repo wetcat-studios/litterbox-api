@@ -27,7 +27,7 @@ class Restock extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Restock';
 
 	protected $fillable = [
-   'uuid', 'name'
+   'uuid', 'name', 'note',
 	];
   
   protected $hidden = [

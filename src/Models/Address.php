@@ -27,7 +27,7 @@ class Address extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Address';
 
 	protected $fillable = [
-    'uuid', 'street', 'zip', 'type',
+    'uuid', 'street', 'zip', 'type', 'att',
 	];
   
   protected $hidden = [
@@ -70,6 +70,11 @@ class Address extends \Vinelab\NeoEloquent\Eloquent\Model  {
   public function county()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\County', 'HAS_ADDRESS');
+  }
+
+  public function chain()
+  {
+    return $this->belongsTo('Wetcat\Litterbox\Models\Chain', 'HAS_ADDRESS');
   }
 
 }

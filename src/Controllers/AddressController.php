@@ -89,7 +89,10 @@ class AddressController extends Controller {
 
       // The owner node
       'owner' => 'required|string', // uuid
-      'ownertype' => 'required|string' // Name of type
+      'ownertype' => 'required|string', // Name of type
+      
+      // Attention field (optional)
+      'att'   => 'string',
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -113,6 +116,7 @@ class AddressController extends Controller {
       'street'  => $request->input('street'),
       //'city'    => $request->input('city'),
       'zip'     => $request->input('zip'),
+      'att'     => $request->input('att'),
     ];
 
     $address = Address::create($addressData);
@@ -196,6 +200,12 @@ class AddressController extends Controller {
           $manufacturer = Manufacturer::where('uuid', $request->input('owner'))->first();
           $rel = $manufacturer->addresses()->save($address);
           $messages[] = 'Address was added to the manufacturer';
+          break;
+          
+        case 'chain':
+          $chain = Chain::where('uuid', $request->input('owner'))->first();
+          $rel = $chain->address()->save($address);
+          $messages[] = 'Address was added to the chain';
           break;
       }
     }

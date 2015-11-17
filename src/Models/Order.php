@@ -27,7 +27,7 @@ class Order extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Order';
 
 	protected $fillable = [
-    'uuid', 'number', 'numArticles',
+    'uuid', 'number', 'numArticles', 'rebate',
 	];
   
   protected $hidden = [

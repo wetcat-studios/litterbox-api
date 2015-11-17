@@ -59,6 +59,7 @@ class RestockController extends Controller
     $validator = Validator::make($request->all(), [
       'manufacturer'  => 'required|string', // UUID
       'rows'          => 'required', //Array of uuids
+      'note'          => 'string',
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -74,7 +75,8 @@ class RestockController extends Controller
     }
 
     $restockData = [
-      'uuid'  => Uuid::uuid4()->toString()
+      'uuid'  => Uuid::uuid4()->toString(),
+      'note'  => $request->input('note'),
     ];
 
     $restock = Restock::create($restockData);

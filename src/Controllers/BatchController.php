@@ -77,6 +77,7 @@ class BatchController extends Controller {
       'count'         => 'required|integer',
       'date'          => 'required',
       'lastdelivery'  => 'required',
+      'note'          => 'string',
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -96,6 +97,7 @@ class BatchController extends Controller {
       'number'  => $request->input('number'),
       'date'    => $request->input('date'),
       'lastdelivery'  => $request->input('lastdelivery'),
+      'note'    => $request->input('note'),
     ];
 
     $batch = Batch::create($batchData);

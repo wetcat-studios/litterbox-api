@@ -66,5 +66,10 @@ class Chain extends \Vinelab\NeoEloquent\Eloquent\Model  {
   {
     return $this->hasOne('Wetcat\Litterbox\Models\Picture', 'HAS_PICTURE');
   }
+
+  public function address()
+  {
+    return $this->hasOne('Wetcat\Litterbox\Models\Address', 'HAS_ADDRESS');
+  }
   
 }

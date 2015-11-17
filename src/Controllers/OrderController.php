@@ -58,6 +58,7 @@ class OrderController extends Controller {
     $validator = Validator::make($request->all(), [
       'customer'  => 'required|string',
       'rows'      => 'required', // Each rows is a uuid and a count
+      'rebate'    => 'numeric',
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -73,7 +74,8 @@ class OrderController extends Controller {
     }
     
     $orderData = [
-      'uuid'  => Uuid::uuid4()->toString()
+      'uuid'    => Uuid::uuid4()->toString(),
+      'rebate'  => $request->input('rebate'),
     ];
 
     $order = Order::create($orderData);

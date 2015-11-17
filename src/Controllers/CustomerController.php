@@ -107,6 +107,7 @@ class CustomerController extends Controller {
       'number'        => 'required',
       'corporate'     => 'required',
       'rebate'        => 'string',
+      'vat'           => 'string',
 
       // The customer segment type (uuid for the node)
       'customersegment'  => 'required|string',
