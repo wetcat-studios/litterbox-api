@@ -272,8 +272,9 @@ class CustomerController extends Controller {
       'customers' => 'required',
     ]);
 
+    $messages = [];
+    
     if ($validator->fails()) {
-      $messages = [];
       foreach ($validator->errors()->all() as $message) {
         $messages[] = $message;
       }
