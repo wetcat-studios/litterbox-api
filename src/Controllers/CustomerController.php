@@ -268,6 +268,23 @@ class CustomerController extends Controller {
    */
   public function verify (Request $request)
   {
+    $validator = Validator::make($request->all(), [
+      'customers' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Verify',
+        'messages'  => $messages
+      ], 400);
+    }
+    
     $token = $request->header('X-Litterbox-Token');
     $secret = TokenHelper::getSecret($token);
     $user = User::where('token', $secret)->first();
