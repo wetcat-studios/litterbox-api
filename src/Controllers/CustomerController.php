@@ -281,7 +281,7 @@ class CustomerController extends Controller {
       ], 401);
     }
     
-    $customers = $request::input('customers');
+    $customers = $request->input('customers');
     
     $updated = [];
     foreach ($customers as $key => $value) {
