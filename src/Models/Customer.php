@@ -31,6 +31,7 @@ class Customer extends \Vinelab\NeoEloquent\Eloquent\Model  {
     'store_type', 
     'invoice_type_paper', 'invoice_type_email',
     'rebate',
+    'member' // The id within the chain (optional)
 	];
   
   protected $hidden = [

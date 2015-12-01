@@ -111,6 +111,7 @@ class CustomerController extends Controller {
       'corporate'     => 'required',
       'rebate'        => 'string',
       'vat'           => 'string',
+      'member'        => 'string',
 
       // The customer segment type (uuid for the node)
       'customersegment'  => 'required|string',
@@ -154,6 +155,7 @@ class CustomerController extends Controller {
       'invoice_type_paper'  => $invoice_type_paper,
       'invoice_type_email'  => $invoice_type_email,
       'rebate'    => $request->input('rebate'),
+      'member'    => $request->input('member'),
     ];
 
     // Create the customer
