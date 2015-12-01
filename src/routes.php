@@ -58,7 +58,7 @@ Route::group(['middleware' => ['cors', 'litterbox-auth']], function ()
   });
 
   // Special route for validating customers
-  Route::post('customers/verify', ['uses' => 'Wetcat\Litterbox\Controllers\CustomerController@verify']);
+  Route::put('customers/{customer}/verify', ['uses' => 'Wetcat\Litterbox\Controllers\CustomerController@verify']);
   
   // Special route for signing orders (uuid) for users (uuid)
   Route::post('orders/{order}/sign/{user}', ['uses' => 'Wetcat\Litterbox\Controllers\OrderController@sign']);

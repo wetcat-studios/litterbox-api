@@ -266,26 +266,8 @@ class CustomerController extends Controller {
   /**
    * Verify a customer node.
    */
-  public function verify (Request $request)
+  public function verify (Request $request, $customer)
   {
-    $validator = Validator::make($request->all(), [
-      'customers' => 'required',
-    ]);
-
-    $messages = [];
-    
-    if ($validator->fails()) {
-      foreach ($validator->errors()->all() as $message) {
-        $messages[] = $message;
-      }
-      return response()->json([
-        'status'    => 400,
-        'data'      => null,
-        'heading'   => 'Verify',
-        'messages'  => $messages
-      ], 400);
-    }
-    
     $token = $request->header('X-Litterbox-Token');
     $secret = TokenHelper::getSecret($token);
     $user = User::where('token', $secret)->first();
@@ -299,28 +281,19 @@ class CustomerController extends Controller {
       ], 401);
     }
     
-    $customers = $request->input('customers');
-    
-    $updated = [];
-    foreach ($customers as $key => $value) {
-      if ($value === 'on') {
-        $customer = Customer::where('uuid', $key)->first();
-        //$customer->number = GoodtradeAdmin\CustomerHelper::createCustomerNumber($customer->name);
-        //$customer->save();
-        $customer->verifiedBy()->save($user);
-        $update[] = [
-          'uuid'  => $customer->uuid,
-          'name'  => $customer->name,
-        ];
-      }
-    }
+    $customerNode = Customer::where('uuid', $customer)->first();
+    $customerNode->verifiedBy()->save($user);
+    $update[] = [
+      'uuid'  => $customerNode->uuid,
+      'name'  => $customerNode->name,
+    ];
 
     return response()->json([
-      'status'    => 200,
-      'data'      => $updated,
+      'status'    => 201,
+      'data'      => $customerNode,
       'heading'   => 'Verified customers',
-      'messages'  => $messages
-    ], 200);
+      'messages'  => ['Customer verified']
+    ], 201);
   }
 
 }
