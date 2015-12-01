@@ -154,8 +154,9 @@ class CustomerController extends Controller {
       'store_type'          => $request->input('store-type'),
       'invoice_type_paper'  => $invoice_type_paper,
       'invoice_type_email'  => $invoice_type_email,
-      'rebate'    => $request->input('rebate'),
-      'member'    => $request->input('member'),
+      'rebate'      => $request->input('rebate'),
+      'member'      => $request->input('member'),
+      'articlesort' => $request->input('articlesort')
     ];
 
     // Create the customer
