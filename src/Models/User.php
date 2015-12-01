@@ -50,32 +50,32 @@ class User extends \Vinelab\NeoEloquent\Eloquent\Model  {
   
 	public function phones()
   {
-    return $this->hasMany('GoodtradeAdmin\Phone', 'HAS_PHONE');
+    return $this->hasMany('Wetcat\Litterbox\Models\Phone', 'HAS_PHONE');
   }
 
   public function customer()
   {
-    return $this->belongsTo('GoodtradeAdmin\Customer', 'HAS_CUSTOMER');
+    return $this->belongsTo('Wetcat\Litterbox\Models\Customer', 'HAS_CUSTOMER');
   }
 
   public function manufacturer()
   {
-    return $this->belongsTo('GoodtradeAdmin\Manufacturer', 'HAS_MANUFACTURER');
-  }
-
-  public function handled()
-  {
-    return $this->hasMany('GoodtradeAdmin\Order', 'HANDLED_BY');
+    return $this->belongsTo('Wetcat\Litterbox\Models\Manufacturer', 'HAS_MANUFACTURER');
   }
 
   public function verified()
   {
-    return $this->hasMany('GoodtradeAdmin\Customer', 'VERIFIED_BY');
+    return $this->hasMany('Wetcat\Litterbox\Models\Customer', 'VERIFIED_BY');
   }
 
   public function segment()
   {
-    return $this->hasOne('GoodtradeAdmin\Segment', 'HAS_USER');
+    return $this->hasOne('Wetcat\Litterbox\Models\Segment', 'HAS_USER');
+  }
+
+  public function signed()
+  {
+    return $this->hasMany('Wetcat\Litterbox\Models\Order', 'SIGNED_BY');
   }
   
 }

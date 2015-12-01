@@ -22,6 +22,9 @@ use Wetcat\Litterbox\Models\User;
 
 use Ramsey\Uuid\Uuid;
 
+use Wetcat\Litterbox\Auth\Roles as RoleHelper;
+use Wetcat\Litterbox\Auth\Token as TokenHelper;
+
 class CustomerController extends Controller {
 
   protected $allowedQueries = [
@@ -261,16 +264,29 @@ class CustomerController extends Controller {
   /**
    * Verify a customer node.
    */
-  public function verify ()
+  public function verify (Request $request)
   {
-    $user = GoodtradeAdmin\User::where('uuid', Auth::user()->uuid)->first();
-    $input = Request::except(['_token']);
+    $token = $request->header('X-Litterbox-Token');
+    $secret = TokenHelper::getSecret($token);
+    $user = User::where('token', $secret)->first();
+    
+    if (!RoleHelper::verify($user->role, 'admin')) {
+      return response()->json([
+        'status'    => 401,
+        'data'      => null,
+        'heading'   => 'Verified customers',
+        'messages'  => ['User does not have right permissions']
+      ], 401);
+    }
+    
+    $customers = $request::input('customers');
+    
     $updated = [];
-    foreach ($input as $key => $value) {
+    foreach ($customers as $key => $value) {
       if ($value === 'on') {
-        $customer = GoodtradeAdmin\Customer::where('uuid', $key)->first();
-        $customer->number = GoodtradeAdmin\CustomerHelper::createCustomerNumber($customer->name);
-        $customer->save();
+        $customer = Customer::where('uuid', $key)->first();
+        //$customer->number = GoodtradeAdmin\CustomerHelper::createCustomerNumber($customer->name);
+        //$customer->save();
         $customer->verifiedBy()->save($user);
         $update[] = [
           'uuid'  => $customer->uuid,

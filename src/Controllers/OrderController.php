@@ -12,6 +12,8 @@ use Wetcat\Litterbox\Models\Article;
 
 use Ramsey\Uuid\Uuid;
 
+use Wetcat\Litterbox\Auth\Roles as RoleHelper;
+
 class OrderController extends Controller {
 
   /**
@@ -89,6 +91,7 @@ class OrderController extends Controller {
       $article = Article::where('uuid', $row['article'])->first();
       $rel = $article->orders()->save($order);
       $rel->count = $row['count'];
+      $rel->rebate = $row['rebate'];
       $rel->save();
     }
     
@@ -156,6 +159,55 @@ class OrderController extends Controller {
   public function destroy($id)
   {
     //
+  }
+  
+  /**
+   * Sign an order with the selected user
+   */
+  public function sign($order, $user)
+  {
+    // Get user, and verify it's level
+    $userNode = User::where('uuid', $user)->first();
+    
+    $messages = [];
+    $result = true;
+    if (!!$userNode) {
+      if (!RoleHelper::verify($userNode->role, 'order')) {
+        return response()->json([
+          'status'    => 401,
+          'data'      => null,
+          'heading'   => 'Order',
+          'messages'  => ['The user does not have correct permissions for this action']
+        ], 401);
+      }
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Order',
+        'messages'  => ['The user was not found']
+      ], 400);
+    }
+    
+    // Get order, verify it, verify it's not already signed
+    $orderNode = Order::where('uuid', $order)->first();
+    
+    if (!!$orderNode) {
+      $rel = $userNode->signed()->save($orderNode);
+      return response()->json([
+        'status'    => 201,
+        'data'      => null,
+        'heading'   => 'Order',
+        'messages'  => ['The order was signed']
+      ], 201);
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Order',
+        'messages'  => ['The order was not found']
+      ], 400);
+    }
   }
 
 }

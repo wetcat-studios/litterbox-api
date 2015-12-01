@@ -57,9 +57,9 @@ class Order extends \Vinelab\NeoEloquent\Eloquent\Model  {
     return $this->belongsToMany('Wetcat\Litterbox\Models\Article', 'HAS_ORDER');
   }
 
-  public function handledBy()
+  public function signedBy()
   {
-    return $this->hasOne('Wetcat\Litterbox\Models\User', 'HANDLED_BY');
+    return $this->belongsTo('Wetcat\Litterbox\Models\User', 'SIGNED_BY');
   }
 
 }
