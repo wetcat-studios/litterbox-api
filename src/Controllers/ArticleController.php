@@ -118,8 +118,9 @@ class ArticleController extends Controller {
       'restockamount'    => 'required|integer',
 //      'expired'         => 'required',
 //      'sustainability'    => 'required|integer', // Moved to segment
-      'filename'         => 'string',
-
+      'filename'        => 'string',
+      'intrastat'       => 'required|string', 
+      
       // Package (one single unit)
       'packageweight'  => 'required',
       'packagewidth'   => 'required',
@@ -260,6 +261,11 @@ class ArticleController extends Controller {
         }
       }
     }
+    
+    // Find and connect to Intrastat
+    $intrastatId = $request->input('intrastat');
+    $intrastat = Intrastat::where('uuid', $intrastatId)->first();
+    $relation = $intrastat->articles()->save($article);
     
     // Find and connect to Brand
     $brandId = $request->input('brand');

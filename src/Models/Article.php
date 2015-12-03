@@ -108,6 +108,11 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
     return $this->belongsToMany('Wetcat\Litterbox\Models\Customer', 'HAS_ARTICLE');
   }
   
+  public function intrastat()
+  {
+    return $this->belongsTo('Wetcat\Litterbox\Models\Intrastat', 'HAS_ARTICLE');
+  }
+  
   // Helper methods for calculating the amount of items in stock
 
   public function incomming ()

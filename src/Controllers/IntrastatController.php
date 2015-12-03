@@ -105,10 +105,12 @@ class IntrastatController extends Controller {
     } else {
       $intrastat = Intrastat::where('uuid', $id)->get();
     }
+    
+    $out = Intrastat::with('articles')->where('uuid', $intrastat->uuid)->first();
 
     return response()->json([
       'status'    => 200,
-      'data'      => $intrastat,
+      'data'      => $out,
       'heading'   => 'Intrastat',
       'messages'  => null
     ], 200);
