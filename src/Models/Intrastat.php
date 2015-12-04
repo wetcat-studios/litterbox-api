@@ -36,6 +36,16 @@ class Intrastat extends \Vinelab\NeoEloquent\Eloquent\Model  {
   protected $dates = [
     'deleted_at'
   ];
+  
+  public function createdBy()
+  {
+    return $this->hasOne('Wetcat\Litterbox\Models\User', 'CREATED_BY');
+  }
+
+  public function deletedBy()
+  {
+    return $this->hasOne('Wetcat\Litterbox\Models\User', 'DELETED_BY');
+  }
 
   public function articles ()
   {
