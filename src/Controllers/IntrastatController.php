@@ -81,12 +81,14 @@ class IntrastatController extends Controller {
 
     $intrastat = Intrastat::create($intraStat);
 
+    $out = Intrastat::with('articles')->where('uuid', $intrastat->uuid)->first();
+    
     $messages[] = 'Intrastat created';
     
     // We made it! Send a success!
     return response()->json([
       'status'    => 201,
-      'data'      => $intrastat,
+      'data'      => $out,
       'heading'   => 'Intrastat',
       'messages'  => $messages
     ], 201);
@@ -106,11 +108,9 @@ class IntrastatController extends Controller {
       $intrastat = Intrastat::where('uuid', $id)->get();
     }
     
-    $out = Intrastat::with('articles')->where('uuid', $intrastat->uuid)->first();
-
     return response()->json([
       'status'    => 200,
-      'data'      => $out,
+      'data'      => $intrastat,
       'heading'   => 'Intrastat',
       'messages'  => null
     ], 200);
