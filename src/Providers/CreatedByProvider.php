@@ -18,6 +18,7 @@ use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\Customersegment;
 use Wetcat\Litterbox\Models\Email;
 use Wetcat\Litterbox\Models\Ingredient;
+use Wetcat\Litterbox\Models\Intrastat;
 use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Order;
 use Wetcat\Litterbox\Models\Phone;
@@ -209,6 +210,14 @@ class CreatedByProvider extends ServiceProvider
       $user = User::where('token', $secret)->first();
       $rel = $model->createdBy()->save($user);
     });
+    
+    Intrastat::created(function ($model) {
+      $token = Request::header('X-Litterbox-Token');
+      $secret = TokenHelper::getSecret($token);
+      $user = User::where('token', $secret)->first();
+      $rel = $model->createdBy()->save($user);
+    });
+    
 /*
     User::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');

@@ -16,6 +16,7 @@ use Wetcat\Litterbox\Models\Picture;
 use Wetcat\Litterbox\Models\Segment;
 use Wetcat\Litterbox\Models\Ingredient;
 use Wetcat\Litterbox\Models\Customer;
+use Wetcat\Litterbox\Models\Intrastat;
 
 use Ramsey\Uuid\Uuid;
 
