@@ -133,9 +133,47 @@ class IntrastatController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update(Request $request, $uuid)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'name' => 'string',
+      'code' => 'string',
+    ]);
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Intrastat',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $intrastat = Intrastat::where('uuid', $uuid)->first();
+    
+    if (!!$intrastat) {
+      
+      if ($request->has('name')) {
+        $intrastat->name = $request->input('name');
+      }
+      
+      if ($request->has('code')) {
+        $intrastat->code = $request->input('code');
+      }
+      
+      $intrastat->save();
+      
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Intrastat',
+        'messages'  => ['Intrastat not found.']
+      ], 400);
+    }
   }
 
   /**
@@ -144,9 +182,18 @@ class IntrastatController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
-    //
+    $intrastat = Intrastat::where('uuid', $uuid)->first();
+
+    $intrastat->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $intrastat,
+      'heading'   => 'Intrastat',
+      'messages'  => ['Intrastat ' . $intrastat->name . ' deleted.']
+    ], 200); 
   }
 
 }
