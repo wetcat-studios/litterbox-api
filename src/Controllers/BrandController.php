@@ -194,7 +194,49 @@ class BrandController extends Controller {
    */
   public function update($id)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'name' => 'string',
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Brand',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $brand = Brand::where('uuid', $uuid)->first();
+    
+    if (!!$brand) {
+      
+      if ($request->has('name')) {
+        $brand->name = $request->input('name');
+      }
+      
+      if ($request->has('url')) {
+        $brand->url = $request->input('url');
+      }
+      
+      if ($request->has('description')) {
+        $brand->description = $request->input('description');
+      }
+      
+      $brand->save();
+      
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Currency',
+        'messages'  => ['Currency not found.']
+      ], 400);
+    }
   }
 
   /**
@@ -205,7 +247,16 @@ class BrandController extends Controller {
    */
   public function destroy($id)
   {
-    //
+    $brand = Brand::where('uuid', $uuid)->first();
+
+    $brand->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $brand,
+      'heading'   => 'Brand',
+      'messages'  => ['Brand ' . $brand->name . ' deleted.']
+    ], 200); 
   }
 
 }
