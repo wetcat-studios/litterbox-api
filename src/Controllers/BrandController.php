@@ -192,7 +192,7 @@ class BrandController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update(Request $request, $uuid)
   {
     $validator = Validator::make($request->all(), [
       'name' => 'string',
@@ -245,7 +245,7 @@ class BrandController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
     $brand = Brand::where('uuid', $uuid)->first();
 
