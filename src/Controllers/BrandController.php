@@ -229,9 +229,11 @@ class BrandController extends Controller {
       
       $brand->save();
       
+      $out = Brand::with(['pictures.thumbnail', 'thumbnail'])->where('uuid', $brand->uuid)->first();
+      
       return response()->json([
         'status'    => 200,
-        'data'      => $brand,
+        'data'      => $out,
         'heading'   => 'Brand',
         'messages'  => ['Brand updated.']
       ], 200);
