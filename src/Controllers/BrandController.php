@@ -229,12 +229,18 @@ class BrandController extends Controller {
       
       $brand->save();
       
+      return response()->json([
+        'status'    => 200,
+        'data'      => $brand,
+        'heading'   => 'Brand',
+        'messages'  => ['Brand updated.']
+      ], 200);
     } else {
       return response()->json([
         'status'    => 400,
         'data'      => null,
-        'heading'   => 'Currency',
-        'messages'  => ['Currency not found.']
+        'heading'   => 'Brand',
+        'messages'  => ['Brand not found.']
       ], 400);
     }
   }

@@ -199,6 +199,12 @@ class CurrencyController extends Controller {
       
       $currency->save();
       
+      return response()->json([
+        'status'    => 200,
+        'data'      => $currency,
+        'heading'   => 'Currency',
+        'messages'  => ['Currency updated.']
+      ], 200);
     } else {
       return response()->json([
         'status'    => 400,
