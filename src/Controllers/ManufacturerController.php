@@ -165,9 +165,49 @@ class ManufacturerController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update(Request $request, $uuid)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'name' => 'string',
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Manufacturer',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $manufacturer = Manufacturer::where('uuid', $uuid)->first();
+    
+    if (!!$manufacturer) {
+      
+      if ($request->has('name')) {
+        $manufacturer->name = $request->input('name');
+      }
+      
+      $manufacturer->save();
+      
+      return response()->json([
+        'status'    => 200,
+        'data'      => $manufacturer,
+        'heading'   => 'Manufacturer',
+        'messages'  => ['Manufacturer updated.']
+      ], 200);
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Manufacturer',
+        'messages'  => ['Manufacturer not found.']
+      ], 400);
+    }
   }
 
   /**
@@ -176,9 +216,18 @@ class ManufacturerController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
-    //
+    $manufacturer = Manufacturer::where('uuid', $uuid)->first();
+
+    $manufacturer->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $manufacturer,
+      'heading'   => 'Manufacturer',
+      'messages'  => ['Manufacturer ' . $manufacturer->name . ' deleted.']
+    ], 200); 
   }
 
 }

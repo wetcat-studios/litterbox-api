@@ -59,7 +59,7 @@ class Address extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   public function country()
   {
-    return $this->belongsTo('Wetcat\Litterbox\Models\Country', 'HAS_COUNTRY');
+    return $this->belongsTo('Wetcat\Litterbox\Models\Country', 'HAS_ADDRESS');
   }
 
   public function city()
