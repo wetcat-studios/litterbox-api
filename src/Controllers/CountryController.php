@@ -18,23 +18,21 @@ class CountryController extends Controller {
    */
   public function index(Request $request)
   {
-    if ($request->has('enabled')) {
-      $countries = Country::where('enabled', 1)->get();
-      return response()->json([
-        'status'    => 200,
-        'data'      => $countries,
-        'heading'   => 'Country',
-        'messages'  => null
-      ], 200);
+    $countries = [];
+
+    if ($request->has('rel')) {
+      $rels = explode('_', $request->input('rel'));
+      $countries = Country::with($rels)->get();
     } else {
       $countries = Country::all();
-      return response()->json([
-        'status'    => 200,
-        'data'      => $countries,
-        'heading'   => 'Country',
-        'messages'  => null
-      ], 200);
-    }    
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $countries,
+      'heading'   => 'Country',
+      'messages'  => null
+    ], 200);
   }
 
   /**
