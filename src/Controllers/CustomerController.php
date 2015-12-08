@@ -120,7 +120,10 @@ class CustomerController extends Controller {
       'chain'         => 'string',
 
       // Chain segment (just the uuid, this is not required!)
-      'chainsegment' => 'string'
+      'chainsegment' => 'string',
+      
+      // Customer group (just the uuid, this is not required!)
+      'group' => 'string'
     ]);
 
     if ($validator->fails()) {
@@ -194,6 +197,19 @@ class CustomerController extends Controller {
       ];
       $customerSegment = Customersegment::create($segmentData);
       $rel = $customerSegment->customers()->save($customer);
+    }
+    
+    // Link customer to group
+    if ($request->has('group') && Uuid::isValid($request->input('group'))) {
+      $group = Group::where('uuid', $request->input('group'))->firstOrFail();
+      $rel = $group->customers()->save($customer);
+    } else {
+      $groupData = [
+        'uuid'  => Uuid::uuid4()->toString(),
+        'name'  => $request->input('group')
+      ];
+      $group = Group::create($groupData);
+      $rel = $group->customers()->save($customer);
     }
 
     // Set the verified by field
