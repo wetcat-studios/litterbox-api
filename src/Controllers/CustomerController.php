@@ -19,6 +19,7 @@ use Wetcat\Litterbox\Models\Customersegment;
 use Wetcat\Litterbox\Models\Chainsegment;
 use Wetcat\Litterbox\Models\Picture;
 use Wetcat\Litterbox\Models\User;
+use Wetcat\Litterbox\Models\Group;
 
 use Ramsey\Uuid\Uuid;
 
