@@ -17,12 +17,14 @@ use Wetcat\Litterbox\Models\Currency;
 use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\Customersegment;
 use Wetcat\Litterbox\Models\Email;
+use Wetcat\Litterbox\Models\Group;
 use Wetcat\Litterbox\Models\Ingredient;
 use Wetcat\Litterbox\Models\Intrastat;
 use Wetcat\Litterbox\Models\Manufacturer;
 use Wetcat\Litterbox\Models\Order;
 use Wetcat\Litterbox\Models\Phone;
 use Wetcat\Litterbox\Models\Picture;
+use Wetcat\Litterbox\Models\Pricelist;
 use Wetcat\Litterbox\Models\Rate;
 use Wetcat\Litterbox\Models\Restock;
 use Wetcat\Litterbox\Models\Segment;
@@ -148,6 +150,13 @@ class CreatedByProvider extends ServiceProvider
       $rel = $model->createdBy()->save($user);
     });
 
+    Group::created(function ($model) {
+      $token = Request::header('X-Litterbox-Token');
+      $secret = TokenHelper::getSecret($token);
+      $user = User::where('token', $secret)->first();
+      $rel = $model->createdBy()->save($user);
+    });
+
     Ingredient::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
       $secret = TokenHelper::getSecret($token);
@@ -177,6 +186,13 @@ class CreatedByProvider extends ServiceProvider
     });
 
     Picture::created(function ($model) {
+      $token = Request::header('X-Litterbox-Token');
+      $secret = TokenHelper::getSecret($token);
+      $user = User::where('token', $secret)->first();
+      $rel = $model->createdBy()->save($user);
+    });
+
+    Pricelist::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
       $secret = TokenHelper::getSecret($token);
       $user = User::where('token', $secret)->first();

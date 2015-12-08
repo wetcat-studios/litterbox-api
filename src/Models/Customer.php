@@ -42,65 +42,70 @@ class Customer extends \Vinelab\NeoEloquent\Eloquent\Model  {
     'deleted_at'
   ];
 
-  public function createdBy()
+  public function createdBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'CREATED_BY');
   }
 
-  public function deletedBy()
+  public function deletedBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'DELETED_BY');
   }
 
-  public function verifiedBy()
+  public function verifiedBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'VERIFIED_BY');
   }
   
 
-  public function chain()
+  public function chain ()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\Chain', 'HAS_MEMBER');
   }
 
-  public function segment()
+  public function segment ()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\Customersegment', 'HAS_CUSTOMER');
   }
 
-  public function chainsegment()
+  public function chainsegment ()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\Chainsegment', 'HAS_CUSTOMER');
   }
 
-  public function addresses()
+  public function addresses ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Address', 'HAS_ADDRESS');
   }
 
-  public function orders()
+  public function orders ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Order', 'HAS_ORDER');
   }
 
-  public function emails()
+  public function emails ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Email', 'HAS_EMAIL');
   }
 
-  public function users()
+  public function users ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\User', 'HAS_USER');
   }
 
-  public function picture()
+  public function picture ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\Picture', 'HAS_PICTURE');
   }
 
-  public function articles()
+  public function articles ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Article', 'HAS_ARTICLE');
+  }
+  
+  public function group ()
+  {
+    return $this->belongsTo('Wetcat\Litterbox\Models\Group', 'HAS_CUSTOMER');
   }
 
 }

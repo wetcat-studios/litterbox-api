@@ -43,74 +43,79 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
     'deleted_at'
   ];
 
-  public function createdBy()
+  public function createdBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'CREATED_BY');
   }
 
-  public function deletedBy()
+  public function deletedBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'DELETED_BY');
   }
 
-  public function categories()
+  public function categories ()
   {
     return $this->belongsToMany('Wetcat\Litterbox\Models\Category', 'HAS_ARTICLE');
   }
 
-  public function segment()
+  public function segment ()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\Segment', 'HAS_ARTICLE');
   }
 
-  public function brand()
+  public function brand ()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\Brand', 'HAS_ARTICLE');
   }
 
-  public function manufacturer()
+  public function manufacturer ()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\Manufacturer', 'HAS_ARTICLE');
   }
 
-  public function batches()
+  public function batches ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Batch', 'HAS_BATCH');
   }
 
-  public function orders()
+  public function orders ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Order', 'HAS_ORDER');
   }
 
-  public function pictures()
+  public function pictures ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Picture', 'HAS_PICTURE');
   }
 
-  public function ingredients()
+  public function ingredients ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Ingredient', 'HAS_INGREDIENT');
   }
 
-  public function restocks()
+  public function restocks ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Restock', 'HAS_RESTOCKS');
   }
 
-  public function campaigns()
+  public function campaigns ()
   {
     return $this->belongsToMany('Wetcat\Litterbox\Models\Campaign', 'HAS_CAMPAIGN');
   }
 
-  public function customers()
+  public function customers ()
   {
-    return $this->belongsToMany('Wetcat\Litterbox\Models\Customer', 'HAS_ARTICLE');
+    return $this->belongsToMany ('Wetcat\Litterbox\Models\Customer', 'HAS_ARTICLE');
   }
   
-  public function intrastat()
+  public function intrastat ()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\Intrastat', 'HAS_ARTICLE');
+  }
+  
+  public function prices ()
+  {
+    return $this->belongsToMany('Wetcat\Litterbox\Models\Pricelist', 'HAS_PRICE');
   }
   
   // Helper methods for calculating the amount of items in stock
