@@ -9,6 +9,7 @@ use Validator;
 use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\Group;
 use Wetcat\Litterbox\Models\Pricelist;
+use Wetcat\Litterbox\Models\Article;
 
 use Ramsey\Uuid\Uuid;
 
