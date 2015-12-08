@@ -81,6 +81,19 @@ class GroupController extends Controller {
 
     $group = Group::create($groupData);
     
+    // When the group has been created, create relationships to all articles...
+    $articles = Article::all();
+    foreach ($articles as $article) {
+      $relation = $group->articles()->save($article);
+      
+      // TODO: Apply rebate/s
+      
+      $relation->productCost = $article->productCost;
+      $relation->unitPrice = $article->unitPrice;
+      $relation->salesPrice = $article->salesPrice;
+      $relation->save();
+    }
+    
     return response()->json([
       'status'    => 201,
       'data'      => $group,
