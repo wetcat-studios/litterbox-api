@@ -9,7 +9,6 @@ use Validator;
 use Wetcat\Litterbox\Models\Customer;
 use Wetcat\Litterbox\Models\Group;
 use Wetcat\Litterbox\Models\Pricelist;
-use Wetcat\Litterbox\Models\Article;
 
 use Ramsey\Uuid\Uuid;
 
@@ -81,7 +80,9 @@ class GroupController extends Controller {
     $messages = [];
 
     $group = Group::create($groupData);
-    
+   
+    /*
+    TODO: Move this to the pricelist creation....
     // When the group has been created, create relationships to all articles...
     $articles = Article::all();
     foreach ($articles as $article) {
@@ -94,6 +95,7 @@ class GroupController extends Controller {
       $relation->salesPrice = $article->salesPrice;
       $relation->save();
     }
+    */
     
     return response()->json([
       'status'    => 201,
