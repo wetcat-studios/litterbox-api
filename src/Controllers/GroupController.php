@@ -56,8 +56,6 @@ class GroupController extends Controller {
   public function store(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      // Group data
-      'uuid'    => 'required',
       'name'  => 'required',
     ]);
     
