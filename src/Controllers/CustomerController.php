@@ -176,7 +176,7 @@ class CustomerController extends Controller {
     if ($request->has('chainsegment') && Uuid::isValid($request->input('chainsegment'))) {
       $chainSegment = Chainsegment::where('uuid', $request->input('chainsegment'))->firstOrFail();
       $rel = $chainSegment->customers()->save($customer);
-    } else {
+    } else if ($request->has('chainsegment') && strlen($request->input('chainsegment')) > 0) {
       $segmentData = [
         'uuid'  => Uuid::uuid4()->toString(),
         'name'  => $request->input('chainsegment')
@@ -191,7 +191,7 @@ class CustomerController extends Controller {
     if ($request->has('customersegment') && Uuid::isValid($request->input('customersegment'))) {
       $customerSegment = Customersegment::where('uuid', $request->input('customersegment'))->firstOrFail();
       $rel = $customerSegment->customers()->save($customer);
-    } else {
+    }  else if ($request->has('customersegment') && strlen($request->input('customersegment')) > 0) {
       $segmentData = [
         'uuid'  => Uuid::uuid4()->toString(),
         'name'  => $request->input('customersegment')
@@ -204,7 +204,7 @@ class CustomerController extends Controller {
     if ($request->has('group') && Uuid::isValid($request->input('group'))) {
       $group = Group::where('uuid', $request->input('group'))->firstOrFail();
       $rel = $group->customers()->save($customer);
-    } else {
+    }  else if ($request->has('group') && strlen($request->input('group')) > 0) {
       $groupData = [
         'uuid'  => Uuid::uuid4()->toString(),
         'name'  => $request->input('group')
