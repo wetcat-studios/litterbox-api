@@ -21,7 +21,7 @@ class PricelistController extends Controller {
    *
    * @return Response
    */
-  public function index(Request $request, $group)
+  public function index($group, Request $request)
   {
     $lists = [];
 
@@ -50,7 +50,7 @@ class PricelistController extends Controller {
    *
    * @return Response
    */
-  public function store(Request $request, $group)
+  public function store($group, Request $request)
   {
     $validator = Validator::make($request->all(), [
       'start' => 'required',
@@ -122,12 +122,12 @@ class PricelistController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show(Request $request, $group, $pricelist)
+  public function show($group, $pricelist, Request $request)
   {
     if ($request->has('rel')) {
-      $list = Pricelist::with($rels)->where('uuid', $id)->get();
+      $list = Pricelist::with($rels)->where('uuid', $pricelist)->get();
     } else {
-      $list = Pricelist::where('uuid', $id)->get();
+      $list = Pricelist::where('uuid', $pricelist)->get();
     }
 
     return response()->json([
@@ -144,7 +144,7 @@ class PricelistController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($group, $pricelist)
+  public function update($group, $pricelist, Request $request)
   {
     $validator = Validator::make($request->all(), [
       'start' => 'string',
@@ -165,7 +165,7 @@ class PricelistController extends Controller {
       ], 400);
     }
     
-    $list = Pricelist::where('uuid', $uuid)->first();
+    $list = Pricelist::where('uuid', $pricelist)->first();
     
     if (!!$list) {
       
@@ -203,7 +203,7 @@ class PricelistController extends Controller {
    */
   public function destroy($group, $pricelist)
   {
-    $list = Pricelist::where('uuid', $uuid)->first();
+    $list = Pricelist::where('uuid', $pricelist)->first();
 
     $list->delete();
 
