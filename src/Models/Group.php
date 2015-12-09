@@ -54,7 +54,7 @@ class Group extends \Vinelab\NeoEloquent\Eloquent\Model  {
 
   public function pricelists ()
   {
-    return $this->hasMany('Wetcat\Litterbox\Models\Pricelist', 'HAS_LIST');
+    return $this->hasMany('Wetcat\Litterbox\Models\Pricelist', 'HAS_PRICELIST');
   }
   
 }

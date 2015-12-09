@@ -232,7 +232,7 @@ class CurrencyController extends Controller {
       'data'      => $currency,
       'heading'   => 'Currency',
       'messages'  => ['Currency ' . $currency->name . ' deleted.']
-    ], 200); 
+    ], 200);
   }
 
 }

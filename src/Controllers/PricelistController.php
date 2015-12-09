@@ -6,9 +6,9 @@ use Wetcat\Litterbox\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 
-use Wetcat\Litterbox\Models\Order;
-use Wetcat\Litterbox\Models\Customer;
+use Wetcat\Litterbox\Models\Pricelist;
 use Wetcat\Litterbox\Models\Article;
+use Wetcat\Litterbox\Models\Group;
 
 use Ramsey\Uuid\Uuid;
 
@@ -21,19 +21,28 @@ class PricelistController extends Controller {
    *
    * @return Response
    */
-  public function index(Request $request)
+  public function index(Request $request, $group)
   {
-   
-  }
+    $lists = [];
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    //
+    if ($request->has('rel')) {
+      $rels = explode('_', $request->input('rel'));
+      $rels[] = 'group';
+      $lists = Pricelist::with($rels)->where('group', function ($query) use ($group) {
+        $query->where('uuid', $group);
+      })->get();
+    } else {
+      $lists = Pricelist::where('group', function ($query) use ($group) {
+        $query->where('uuid', $group);
+      })->get();
+    }
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $lists,
+      'heading'   => 'Pricelist',
+      'messages'  => null
+    ], 200); 
   }
 
   /**
@@ -41,9 +50,70 @@ class PricelistController extends Controller {
    *
    * @return Response
    */
-  public function store(Request $request)
+  public function store(Request $request, $group)
   {
+    $validator = Validator::make($request->all(), [
+      'start' => 'required',
+      'end'   => 'required',
+      
+      'group' => 'string|required',
+    ]);
     
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Pricelist',
+        'messages'  => $messages
+      ], 400);
+    }
+
+    $pricelistData = [
+      'uuid'  => Uuid::uuid4()->toString(),
+      'start'  => $request->input('start'),
+      'end'  => $request->input('end'),
+    ];
+
+    $messages = [];
+
+    $list = Pricelist::create($pricelistData);
+   
+    // When the pricelist has been created, create relationships to all articles...
+    $articles = Article::all();
+    foreach ($articles as $article) {
+      $relation = $list->articles()->save($article);
+      
+      // TODO: Apply rebate/s ?
+      
+      $relation->productCost = $article->productCost;
+      $relation->unitPrice = $article->unitPrice;
+      $relation->salesPrice = $article->salesPrice;
+      $relation->save();
+    }
+    
+    // Link pricelist to group
+    if ($request->has('group') && Uuid::isValid($request->input('group'))) {
+      $group = Group::where('uuid', $request->input('group'))->firstOrFail();
+      $rel = $group->pricelists()->save($list);
+    }  else if ($request->has('group') && strlen($request->input('group')) > 0) {
+      $groupData = [
+        'uuid'  => Uuid::uuid4()->toString(),
+        'name'  => $request->input('group')
+      ];
+      $group = Group::create($groupData);
+      $rel = $group->pricelists()->save($list);
+    }
+    
+    return response()->json([
+      'status'    => 201,
+      'data'      => $list,
+      'heading'   => 'Pricelist',
+      'messages'  => $messages
+    ], 201);
   }
 
   /**
@@ -52,20 +122,20 @@ class PricelistController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function show(Request $request, $id)
+  public function show(Request $request, $group, $pricelist)
   {
-    
-  }
+    if ($request->has('rel')) {
+      $list = Pricelist::with($rels)->where('uuid', $id)->get();
+    } else {
+      $list = Pricelist::where('uuid', $id)->get();
+    }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {
-    //
+    return response()->json([
+      'status'    => 200,
+      'data'      => $list,
+      'heading'   => 'Pricelist',
+      'messages'  => null
+    ], 200);
   }
 
   /**
@@ -74,9 +144,55 @@ class PricelistController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update($group, $pricelist)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'start' => 'string',
+      'end'   => 'string',
+      'recalculate' => 'integer',
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Pricelist',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $list = Pricelist::where('uuid', $uuid)->first();
+    
+    if (!!$list) {
+      
+      if ($request->has('start')) {
+        $list->start = $request->input('start');
+      }
+      
+      if ($request->has('end')) {
+        $list->end = $request->input('end');
+      }
+      
+      $list->save();
+      
+      return response()->json([
+        'status'    => 200,
+        'data'      => $list,
+        'heading'   => 'Pricelist',
+        'messages'  => ['Pricelist updated.']
+      ], 200);
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Pricelist',
+        'messages'  => ['Pricelist not found.']
+      ], 400);
+    }
   }
 
   /**
@@ -85,9 +201,18 @@ class PricelistController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($group, $pricelist)
   {
-    //
+    $list = Pricelist::where('uuid', $uuid)->first();
+
+    $list->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $list,
+      'heading'   => 'Pricelist',
+      'messages'  => ['Pricelist ' . $list->name . ' deleted.']
+    ], 200);
   }
 
 }

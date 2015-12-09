@@ -46,6 +46,11 @@ class Pricelist extends \Vinelab\NeoEloquent\Eloquent\Model  {
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'DELETED_BY');
   }
+  
+  public function group ()
+  {
+    return $this->belongsTo('Wetcat\Litterbox\Models\Group', 'HAS_PRICELIST');
+  }
 
   public function articles ()
   {
