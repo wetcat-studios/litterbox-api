@@ -27,7 +27,7 @@ class Pricelist extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Pricelist';
 
 	protected $fillable = [
-   'uuid', 'from', 'to',
+   'uuid', 'start', 'end',
 	];
   
   protected $hidden = [
@@ -47,7 +47,7 @@ class Pricelist extends \Vinelab\NeoEloquent\Eloquent\Model  {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'DELETED_BY');
   }
   
-  public function group ()
+  public function pricelists ()
   {
     return $this->belongsTo('Wetcat\Litterbox\Models\Group', 'HAS_PRICELIST');
   }
