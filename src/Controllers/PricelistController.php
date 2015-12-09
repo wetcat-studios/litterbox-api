@@ -27,13 +27,12 @@ class PricelistController extends Controller {
 
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
-      $rels[] = 'group';
-      $lists = Pricelist::with($rels)->where('group', function ($query) use ($group) {
-        $query->where('uuid', $group);
+      $lists = Pricelist::with($rels)->whereHas('group', function ($q) use ($group) {
+          $q->where('uuid', $group);
       })->get();
     } else {
-      $lists = Pricelist::where('group', function ($query) use ($group) {
-        $query->where('uuid', $group);
+      $lists = Pricelist::whereHas('group', function ($q) use ($group) {
+          $q->where('uuid', $group);
       })->get();
     }
 
