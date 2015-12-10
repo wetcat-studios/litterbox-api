@@ -120,7 +120,8 @@ class ArticleController extends Controller {
 //      'expired'         => 'required',
 //      'sustainability'    => 'required|integer', // Moved to segment
       'filename'        => 'string',
-      'intrastat'       => 'required|string', 
+      'intrastat'       => 'required|string',
+      'description'     => 'string', // Optional description
       
       // Package (one single unit)
       'packageweight'  => 'required',
