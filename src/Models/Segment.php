@@ -37,27 +37,27 @@ class Segment extends \Vinelab\NeoEloquent\Eloquent\Model  {
     'deleted_at'
   ];
 
-  public function createdBy()
+  public function createdBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'CREATED_BY');
   }
 
-  public function deletedBy()
+  public function deletedBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'DELETED_BY');
   }
 
-  public function articles()
+  public function articles ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Article', 'HAS_ARTICLE');
   }
 
-  public function shipping ()
+  public function shippings ()
   {
-    return $this->hasOne('Wetcat\Litterbox\Models\Shippingmethod', 'HAS_SEGMENT');
+    return $this->belongsToMany('Wetcat\Litterbox\Models\Shippingmethod', 'HAS_SEGMENT');
   }
 
-  public function users()
+  public function users ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\User', 'HAS_USER');
   }

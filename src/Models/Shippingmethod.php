@@ -27,7 +27,7 @@ class Shippingmethod extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Shippingmethod';
 
 	protected $fillable = [
-   'uuid', 'name', 'restricted'
+   'uuid', 'name'
 	];
   
   protected $hidden = [
@@ -37,17 +37,17 @@ class Shippingmethod extends \Vinelab\NeoEloquent\Eloquent\Model  {
     'deleted_at'
   ];
   
-  public function createdBy()
+  public function createdBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'CREATED_BY');
   }
 
-  public function deletedBy()
+  public function deletedBy ()
   {
     return $this->hasOne('Wetcat\Litterbox\Models\User', 'DELETED_BY');
   }
 
-  public function segments()
+  public function segments ()
   {
     return $this->hasMany('Wetcat\Litterbox\Models\Segment', 'HAS_SEGMENT');
   }

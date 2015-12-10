@@ -84,8 +84,7 @@ class ShippingmethodController extends Controller
     $validator = Validator::make($request->all(), [
       'name'        => 'required|string',
       'owner'       => 'required|string',
-      'ownertype'   => 'required|string',
-      'restricted'  => 'required|boolean',
+      'ownertype'   => 'required|string'
     ]);
 
     if ($validator->fails()) {
