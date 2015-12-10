@@ -18,7 +18,7 @@ class ShippingmethodController extends Controller
    *
    * @return Response
    */
-  public function index(Request $request)
+  public function index (Request $request)
   {
     $methods = [];
 
@@ -64,22 +64,12 @@ class ShippingmethodController extends Controller
   }
 
   /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    //
-  }
-
-  /**
    * Store a newly created resource in storage.
    *
    * @param  Request  $request
    * @return Response
    */
-  public function store(Request $request)
+  public function store (Request $request)
   {
     $validator = Validator::make($request->all(), [
       'name'        => 'required|string',
@@ -124,7 +114,7 @@ class ShippingmethodController extends Controller
       switch ($request->input('ownertype')) {
         case 'segment':
           $segment = Segment::where('uuid', $request->input('owner'))->first();
-          $rel = $segment->shipping()->save($method);
+          $rel = $segment->shippings()->save($method);
           $messages[] = 'Shipping method was added to the segment';
           break;
       }
@@ -153,7 +143,7 @@ class ShippingmethodController extends Controller
    * @param  int  $id
    * @return Response
    */
-  public function show(Request $request, $id)
+  public function show (Request $request, $id)
   {
     if ($request->has('rel')) {
       $shippingmethod = Shippingmethod::with($rels)->where('uuid', $id)->get();
@@ -168,18 +158,7 @@ class ShippingmethodController extends Controller
       'messages'  => null
     ], 200);
   }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {
-      //
-  }
-
+  
   /**
    * Update the specified resource in storage.
    *
@@ -187,7 +166,7 @@ class ShippingmethodController extends Controller
    * @param  int  $id
    * @return Response
    */
-  public function update(Request $request, $id)
+  public function update (Request $request, $id)
   {
       //
   }
@@ -198,7 +177,7 @@ class ShippingmethodController extends Controller
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy ($id)
   {
       //
   }
