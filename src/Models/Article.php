@@ -33,7 +33,7 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
     'packagepercolli', 'collipereupallet', 'collipereulav', 'colliperhalfpallet', 'colliperhalflav', 'collipershippallet', 'collipershiplav',
     'kj', 'kcal', 'fat', 'saturatedfat', 'carbs', 'sugar', 'fibers', 'proteins', 'salt',
 	
-    'productCost', 'unitPrice', 'salesPrice',
+    'productCost', 'unitPrice', 'salesPrice', 'calculatedMargin',
   ];
   
   protected $hidden = [

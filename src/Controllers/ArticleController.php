@@ -175,7 +175,8 @@ class ArticleController extends Controller {
       // be updated whenever certain variables in the system are changed.
       'productCost' => 'numeric|required', 
       'unitPrice'   => 'numeric|required',
-      'salesPrice'  => 'numeric|required', 
+      'salesPrice'  => 'numeric|required',
+      'calculatedMargin' => 'numeric|required',
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -190,6 +191,7 @@ class ArticleController extends Controller {
       ], 400);
     }
 
+    // Create the article on all data, except the links to other nodes
     $articleData = $request->except('filename', 'category', 'categories', 'segment', 'brand', 'manufacturer', 'ingredients', 'customers');
     $articleData['uuid'] = Uuid::uuid4()->toString();
 
