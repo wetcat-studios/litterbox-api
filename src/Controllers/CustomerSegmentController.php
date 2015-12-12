@@ -150,9 +150,43 @@ class CustomerSegmentController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update(Request $request, $uuid)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'name' => 'string',
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Customersegment',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $segment = Customersegment::where('uuid', $uuid)->first();
+    
+    if (!!$segment) {
+      
+      if ($request->has('name')) {
+        $segment->name = $request->input('name');
+      }
+      
+      $segment->save();
+      
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Customersegment',
+        'messages'  => ['Customersegment not found.']
+      ], 400);
+    }
   }
 
   /**
@@ -161,9 +195,18 @@ class CustomerSegmentController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
-    //
+    $segment = Customersegment::where('uuid', $uuid)->first();
+
+    $segment->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $segment,
+      'heading'   => 'Customersegment',
+      'messages'  => ['Customersegment ' . $segment->name . ' deleted.']
+    ], 200); 
   }
 
 }

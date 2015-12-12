@@ -154,7 +154,6 @@ class CategoryController extends Controller {
   {
     $validator = Validator::make($request->all(), [
       'name' => 'string',
-      'code' => 'string',
     ]);
     
     if ($validator->fails()) {
