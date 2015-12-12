@@ -150,9 +150,44 @@ class CategoryController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update(Request $request, $uuid)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'name' => 'string',
+      'code' => 'string',
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Category',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $category = Category::where('uuid', $uuid)->first();
+    
+    if (!!$category) {
+      
+      if ($request->has('name')) {
+        $category->name = $request->input('name');
+      }
+      
+      $category->save();
+      
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Category',
+        'messages'  => ['Category not found.']
+      ], 400);
+    }
   }
 
   /**
@@ -161,9 +196,18 @@ class CategoryController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
-    //
+    $category = Category::where('uuid', $uuid)->first();
+
+    $category->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $category,
+      'heading'   => 'Category',
+      'messages'  => ['Category ' . $category->name . ' deleted.']
+    ], 200); 
   }
 
 }
