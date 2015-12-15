@@ -264,9 +264,43 @@ class CustomerController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update(Request $request, $uuid)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'name' => 'string',
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Customer',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $customer = Customer::where('uuid', $uuid)->first();
+    
+    if (!!$customer) {
+      
+      if ($request->has('name')) {
+        $customer->name = $request->input('name');
+      }
+      
+      $customer->save();
+      
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Customer',
+        'messages'  => ['Customer not found.']
+      ], 400);
+    }
   }
 
   /**
@@ -275,9 +309,18 @@ class CustomerController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
-    //
+    $customer = Customer::where('uuid', $uuid)->first();
+
+    $customer->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $customer,
+      'heading'   => 'Customer',
+      'messages'  => ['Customer ' . $customer->name . ' deleted.']
+    ], 200); 
   }
   
   
