@@ -401,9 +401,18 @@ class ArticleController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
-    //
+    $article = Article::where('uuid', $uuid)->first();
+
+    $article->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $article,
+      'heading'   => 'Article',
+      'messages'  => ['Article ' . $article->name . ' deleted.']
+    ], 200);
   }
 
 }
