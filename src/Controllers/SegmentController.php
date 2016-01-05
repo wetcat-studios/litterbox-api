@@ -165,7 +165,16 @@ class SegmentController extends Controller {
    */
   public function destroy($id)
   {
-    //
+    $segment = Segment::where('uuid', $uuid)->first();
+
+    $segment->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $segment,
+      'heading'   => 'Segment',
+      'messages'  => ['Segment ' . $segment->name . ' deleted.']
+    ], 200);
   }
 
 }
