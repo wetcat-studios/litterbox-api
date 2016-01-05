@@ -160,10 +160,10 @@ class SegmentController extends Controller {
   /**
    * Remove the specified resource from storage.
    *
-   * @param  int  $id
+   * @param  int  $uuid
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
     $segment = Segment::where('uuid', $uuid)->first();
 
