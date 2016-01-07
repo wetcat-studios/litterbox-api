@@ -232,6 +232,8 @@ class CreatedByProvider extends ServiceProvider
       $secret = TokenHelper::getSecret($token);
       $user = User::where('token', $secret)->first();
       $rel = $model->createdBy()->save($user);
+      
+      Analytics::trackEvent('Intrastat', 'created');
     });
     
 /*
