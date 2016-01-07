@@ -12,12 +12,6 @@ This assumes you've already installed Laravel 5.1.19 (neoeloquent is not compati
 Wetcat\Litterbox\LitterboxServiceProvider::class,
 ```
 
-3. Add facades
-
-```php
-'Image' => Intervention\Image\Facades\Image::class,
-```
-
 3. Publish config `php artisan vendor:publish` and modify to suit your Neo server.
 
 4. Update configs.

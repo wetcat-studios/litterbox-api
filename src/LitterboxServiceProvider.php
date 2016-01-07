@@ -56,6 +56,13 @@ class LitterboxServiceProvider extends ServiceProvider
       __DIR__.'/config/config.php' => config_path('litterbox.php'),
     ]);
     */
+    
+    $this->app->booting(function()
+    {
+      $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+      $loader->alias('Analytics', \Ipunkt\LaravelAnalytics\AnalyticsFacade::class);
+      $loader->alias('Image', \Intervention\Image\Facades\Image::class);
+    });
   }
 
 
@@ -86,8 +93,6 @@ class LitterboxServiceProvider extends ServiceProvider
     $this->app->register(\Intervention\Image\ImageServiceProvider::class);
     $this->app->register(\anlutro\LaravelSettings\ServiceProvider::class);
     $this->app->register(\Ipunkt\LaravelAnalytics\AnalyticsServiceProvider::class);
-    
-    AliasLoader::getInstance()->alias('Analytics', \Ipunkt\LaravelAnalytics\AnalyticsFacade::class);
   }
 
 
