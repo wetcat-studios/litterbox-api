@@ -233,7 +233,7 @@ class CreatedByProvider extends ServiceProvider
       $user = User::where('token', $secret)->first();
       $rel = $model->createdBy()->save($user);
       
-      \Analytics::trackEvent('Intrastat', 'created', $model->uuid, date());
+      \Analytics::trackEvent('Intrastat', 'created', $model->uuid);
     });
     
 /*
