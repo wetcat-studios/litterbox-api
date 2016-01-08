@@ -233,7 +233,7 @@ class DeletedByProvider extends ServiceProvider
       $user = User::where('token', $secret)->first();
       $rel = $model->deletedBy()->save($user);
       
-      \Analytics::trackEvent('Intrastat', 'deleted', $model->uuid);
+      \Analytics::trackEvent('Intrastat', 'deleted', $model->uuid, date());
     });
 /*
     User::deleted(function ($model) {
