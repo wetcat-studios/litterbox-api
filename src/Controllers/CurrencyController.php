@@ -199,9 +199,11 @@ class CurrencyController extends Controller {
       
       $currency->save();
       
+      $out = Currency::with('rates')->where('uuid', $currency->uuid)->first();
+      
       return response()->json([
         'status'    => 200,
-        'data'      => $currency,
+        'data'      => $out,
         'heading'   => 'Currency',
         'messages'  => ['Currency updated.']
       ], 200);
