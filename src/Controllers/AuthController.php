@@ -234,7 +234,7 @@ class AuthController extends Controller {
   /**
    * Reset a password with a specitic reset token
    */
-  public function reset (Requst $request)
+  public function reset (Request $request)
   {
     $validator = Validator::make($request->all(), [
       'resettoken' => 'required|string',
