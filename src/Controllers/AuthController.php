@@ -6,6 +6,7 @@ use Wetcat\Litterbox\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 use Hash;
+use Mail;
 
 use Wetcat\Litterbox\Models\User;
 
