@@ -139,7 +139,7 @@ class AuthController extends Controller {
    */
   public function password (Request $request)
   {
-    $validator = Validator::make(Request::all(), [
+    $validator = Validator::make($request->all(), [
       'newpassword' => 'required|confirmed|min:6',
       'oldpassword'  => 'required',
     ]);
@@ -158,7 +158,7 @@ class AuthController extends Controller {
 
     // Old password must match logged in users current password
     $currentPassword = Auth::user()->password;
-    if (!Hash::check(Request::input('oldpassword'), $currentPassword)) {
+    if (!Hash::check($request->input('oldpassword'), $currentPassword)) {
       return response()->json([
         'status'    => 400,
         'data'      => null,
@@ -180,7 +180,7 @@ class AuthController extends Controller {
       ], 400);
     }
 
-    $user->password = Hash::make(Request::input('newpassword1'));
+    $user->password = Hash::make($request->input('newpassword1'));
     $user->save();
 
     // Issue new email!
@@ -198,9 +198,9 @@ class AuthController extends Controller {
    * Update a user names
    * TODO: Remove this... should use User::update() instead!
    */
-  public function name ()
+  public function name (Request $request)
   {
-    $validator = Validator::make(Request::all(), [
+    $validator = Validator::make($request->all(), [
       'firstname' => 'required|string',
       'lastname' => 'required|string',
     ]);
@@ -233,9 +233,9 @@ class AuthController extends Controller {
   /**
    * Request a new password to be sent from the server
    */
-  public function forgot ()
+  public function forgot (Request $request)
   {
-    $validator = Validator::make(Request::all(), [
+    $validator = Validator::make($request->all(), [
       'email' => 'required|string',
     ]);
     
@@ -292,9 +292,9 @@ class AuthController extends Controller {
   /**
    * Create a new Customer request.
    */
-  public function request ()
+  public function request (Request $request)
   {
-    $validator = Validator::make(Request::all(), [
+    $validator = Validator::make($request->all(), [
       'name'          => 'required|string',
       'contact-email' => 'required|email',
       'corporate'     => 'required',
@@ -337,20 +337,20 @@ class AuthController extends Controller {
     }
 
     $invoice_type_paper = 0;
-    if (Request::has('invoice-type-paper')) {
-      $invoice_type_paper = Request::input('invoice-type-paper');
+    if ($request->has('invoice-type-paper')) {
+      $invoice_type_paper = $request->input('invoice-type-paper');
     }
 
     $invoice_type_email = 0;
-    if (Request::has('invoice-type-email')) {
-      $invoice_type_email = Request::input('invoice-type-email');
+    if ($request->has('invoice-type-email')) {
+      $invoice_type_email = $request->input('invoice-type-email');
     }
     
     $customerData = [
       'uuid'      => Uuid::uuid4()->toString(),
-      'name'      => Request::input('name'),
-      'corporate' => Request::input('corporate'),
-      'store_type'          => Request::input('store-type'),
+      'name'      => $request->input('name'),
+      'corporate' => $request->input('corporate'),
+      'store_type'          => $request->input('store-type'),
       'invoice_type_paper'  => $invoice_type_paper,
       'invoice_type_email'  => $invoice_type_email,
     ];
@@ -358,44 +358,44 @@ class AuthController extends Controller {
     $customer = GoodtradeAdmin\Customer::create($customerData);
 
     // Link customer to chain
-    $chain = GoodtradeAdmin\Chain::where('uuid', Request::input('chain'))->first();
+    $chain = GoodtradeAdmin\Chain::where('uuid', $request->input('chain'))->first();
     $rel = $chain->members()->save($customer);
     
     // Link customer to chain
-    $segment = GoodtradeAdmin\Customersegment::where('uuid', Request::input('customer-segment'))->first();
+    $segment = GoodtradeAdmin\Customersegment::where('uuid', $request->input('customer-segment'))->first();
     $rel = $segment->customers()->save($customer);
     
 
     $emailData = [
       'uuid'      =>  Uuid::uuid4()->toString(),
-      'address'   =>  Request::input('contact-email'),
+      'address'   =>  $request->input('contact-email'),
     ];
 
     $email = GoodtradeAdmin\Email::create($emailData);
     $rel = $customer->emails()->save($email);
 
-    $country = GoodtradeAdmin\Country::where('uuid', Request::input('invoice-country'))->first();
+    $country = GoodtradeAdmin\Country::where('uuid', $request->input('invoice-country'))->first();
 
     $invoiceData = [
       'uuid'    =>  Uuid::uuid4()->toString(),
-      'street'  =>  Request::input('invoice-street'),
-      'zip'     =>  Request::input('invoice-zip'),
-      'city'    =>  Request::input('invoice-city'),
-      'country' =>  Request::input('invoice-country'),
+      'street'  =>  $request->input('invoice-street'),
+      'zip'     =>  $request->input('invoice-zip'),
+      'city'    =>  $request->input('invoice-city'),
+      'country' =>  $request->input('invoice-country'),
     ];
 
     $invoiceAddr = GoodtradeAdmin\Address::create($invoiceData);
     $customer->addresses()->save($invoiceAddr);
     $country->addresses()->save($invoiceAddr);
     
-    $country = GoodtradeAdmin\Country::where('uuid', Request::input('delivery-country'))->first();
+    $country = GoodtradeAdmin\Country::where('uuid', $request->input('delivery-country'))->first();
 
     $deliveryData = [
       'uuid'    =>  Uuid::uuid4()->toString(),
-      'street'  =>  Request::input('delivery-street'),
-      'zip'     =>  Request::input('delivery-zip'),
-      'city'    =>  Request::input('delivery-city'),
-      'country' =>  Request::input('delivery-country'),
+      'street'  =>  $request->input('delivery-street'),
+      'zip'     =>  $request->input('delivery-zip'),
+      'city'    =>  $request->input('delivery-city'),
+      'country' =>  $request->input('delivery-country'),
     ];
 
     $deliveryAddr = GoodtradeAdmin\Address::create($deliveryData);
@@ -405,9 +405,9 @@ class AuthController extends Controller {
     $randomPw = str_random(8);
     $userData = [
       'uuid'      => Uuid::uuid4()->toString(),
-      'firstname' => Request::input('firstname'),
-      'lastname'  => Request::input('lastname'),
-      'email'     => Request::input('email'),
+      'firstname' => $request->input('firstname'),
+      'lastname'  => $request->input('lastname'),
+      'email'     => $request->input('email'),
 
       // Extra data
       'note'      => '',
