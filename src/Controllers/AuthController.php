@@ -264,12 +264,12 @@ class AuthController extends Controller {
       $user->resettoken = $resettoken;
       $user->save();
       
-      $msg = 'Your token is: ' . $resettoken;
+      $msg = 'Din återställningskod är ' . $resettoken;
       
       // Send an email
       Mail::raw($msg, function ($emailmsg) use ($user) {
-          $emailmsg->from('hello@app.com', 'Your Application');
-          $emailmsg->to($user->email, $user->name)->subject('Your password was reset!');
+          $emailmsg->from('no-reply@goodtrade.se', 'Goodtrade AB');
+          $emailmsg->to($user->email, $user->name)->subject('Ditt lösenord är återställt');
       });
       
       return response()->json([
