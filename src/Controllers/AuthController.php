@@ -232,6 +232,60 @@ class AuthController extends Controller {
   
   
   /**
+   * Reset a password with a specitic reset token
+   */
+  public function reset (Requst $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'resettoken' => 'required|string',
+      'password'  => 'required|confirmed'
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Password reset',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $user = User::where('resettoken', $request->input('resettoken'))->first();
+    
+    if (!!$user) {
+      $user->password = Hash::make($request->input('password'));
+      $user->save();
+      
+      $msg = 'Ditt nya lösenord är nu skapat och du kan logga in med det.';
+      
+      // Send an email
+      Mail::raw($msg, function ($emailmsg) use ($user) {
+          $emailmsg->from('no-reply@goodtrade.se', 'Goodtrade AB');
+          $emailmsg->to($user->email, $user->name)->subject('Lösenord återställt');
+      });
+      
+      return response()->json([
+        'status'    => 200,
+        'data'      => null,
+        'heading'   => 'Password reset',
+        'messages'  => ['The password was reset, please check your email']
+      ], 200);
+    } else {
+      return response()->json([
+        'status'    => 404,
+        'data'      => null,
+        'heading'   => 'Password reset',
+        'messages'  => ['Invalid reset token']
+      ], 400);
+    }
+  }
+  
+  
+  /**
    * Request a new password to be sent from the server
    */
   public function forgot (Request $request)
@@ -258,6 +312,8 @@ class AuthController extends Controller {
     if (!!$user) {
       $resettoken = Uuid::uuid4()->toString();
       
+      // Remove all login tokens
+      $user->token = '';
       // Just set a random password
       $user->password = Hash::make(Uuid::uuid1()->toString());
       // Store the reset token
@@ -269,14 +325,14 @@ class AuthController extends Controller {
       // Send an email
       Mail::raw($msg, function ($emailmsg) use ($user) {
           $emailmsg->from('no-reply@goodtrade.se', 'Goodtrade AB');
-          $emailmsg->to($user->email, $user->name)->subject('Ditt lösenord är återställt');
+          $emailmsg->to($user->email, $user->name)->subject('Återställning av lösenord');
       });
       
       return response()->json([
         'status'    => 200,
         'data'      => null,
         'heading'   => 'Password reset',
-        'messages'  => ['The password was reset, please check your email']
+        'messages'  => ['Password reset token was created, check your mail.']
       ], 200);
     } else {
       return response()->json([
