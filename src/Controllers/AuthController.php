@@ -267,7 +267,7 @@ class AuthController extends Controller {
       $msg = 'Your token is: ' . $resettoken;
       
       // Send an email
-      Mail::send($msg, ['user' => $user], function ($m) use ($user) {
+      Mail::raw($msg, ['user' => $user], function ($m) use ($user) {
           $m->from('hello@app.com', 'Your Application');
 
           $m->to($user->email, $user->name)->subject('Your password was reset!');
