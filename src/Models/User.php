@@ -31,7 +31,7 @@ class User extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	];
   
   protected $hidden = [
-    'password', 'token',
+    'password', 'token', 'resettoken',
   ];
 
   protected $dates = [

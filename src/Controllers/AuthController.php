@@ -231,6 +231,65 @@ class AuthController extends Controller {
   
   
   /**
+   * Request a new password to be sent from the server
+   */
+  public function forgot ()
+  {
+    $validator = Validator::make(Request::all(), [
+      'email' => 'required|string',
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Password reset',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $user = User::where('email', $request->input('email'))->first();
+    
+    if (!!$user) {
+      $resettoken = Uuid::uuid4()->toString();
+      
+      // Just set a random password
+      $user->password = Hash::make(Uuid::uuid1()->toString());
+      // Store the reset token
+      $user->resettoken = $resettoken;
+      $user->save();
+      
+      $msg = 'Your token is: ' . $resettoken;
+      
+      // Send an email
+      Mail::send($msg, ['user' => $user], function ($m) use ($user) {
+          $m->from('hello@app.com', 'Your Application');
+
+          $m->to($user->email, $user->name)->subject('Your password was reset!');
+      });
+      
+      return response()->json([
+        'status'    => 200,
+        'data'      => null,
+        'heading'   => 'Password reset',
+        'messages'  => ['The password was reset, please check your email']
+      ], 200);
+    } else {
+      return response()->json([
+        'status'    => 404,
+        'data'      => null,
+        'heading'   => 'Password reset',
+        'messages'  => ['User with that email does not exist']
+      ], 400);
+    }
+  }
+  
+  
+  /**
    * Create a new Customer request.
    */
   public function request ()
@@ -288,7 +347,7 @@ class AuthController extends Controller {
     }
     
     $customerData = [
-      'uuid'      => Rhumsaa\Uuid\Uuid::uuid4()->toString(),
+      'uuid'      => Uuid::uuid4()->toString(),
       'name'      => Request::input('name'),
       'corporate' => Request::input('corporate'),
       'store_type'          => Request::input('store-type'),
@@ -308,7 +367,7 @@ class AuthController extends Controller {
     
 
     $emailData = [
-      'uuid'      => Rhumsaa\Uuid\Uuid::uuid4()->toString(),
+      'uuid'      =>  Uuid::uuid4()->toString(),
       'address'   =>  Request::input('contact-email'),
     ];
 
@@ -318,7 +377,7 @@ class AuthController extends Controller {
     $country = GoodtradeAdmin\Country::where('uuid', Request::input('invoice-country'))->first();
 
     $invoiceData = [
-      'uuid'    => Rhumsaa\Uuid\Uuid::uuid4()->toString(),
+      'uuid'    =>  Uuid::uuid4()->toString(),
       'street'  =>  Request::input('invoice-street'),
       'zip'     =>  Request::input('invoice-zip'),
       'city'    =>  Request::input('invoice-city'),
@@ -332,7 +391,7 @@ class AuthController extends Controller {
     $country = GoodtradeAdmin\Country::where('uuid', Request::input('delivery-country'))->first();
 
     $deliveryData = [
-      'uuid'    => Rhumsaa\Uuid\Uuid::uuid4()->toString(),
+      'uuid'    =>  Uuid::uuid4()->toString(),
       'street'  =>  Request::input('delivery-street'),
       'zip'     =>  Request::input('delivery-zip'),
       'city'    =>  Request::input('delivery-city'),
@@ -345,7 +404,7 @@ class AuthController extends Controller {
 
     $randomPw = str_random(8);
     $userData = [
-      'uuid'      => Rhumsaa\Uuid\Uuid::uuid4()->toString(),
+      'uuid'      => Uuid::uuid4()->toString(),
       'firstname' => Request::input('firstname'),
       'lastname'  => Request::input('lastname'),
       'email'     => Request::input('email'),

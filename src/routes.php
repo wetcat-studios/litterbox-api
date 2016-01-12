@@ -5,6 +5,7 @@ Route::group(['prefix' => 'auth', 'middleware' => ['cors', 'litterbox-guest']], 
 {
   Route::post('login', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@login']);
   Route::post('register', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@register']);
+  Route::post('forgot', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@forgot']);
   Route::post('request', ['uses' => 'Wetcat\Litterbox\Controllers\AuthController@request']);
 });
 
