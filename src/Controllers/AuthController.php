@@ -258,6 +258,7 @@ class AuthController extends Controller {
     
     if (!!$user) {
       $user->password = Hash::make($request->input('password'));
+      $user->resettoken = '';
       $user->save();
       
       $msg = 'Ditt nya lösenord är nu skapat och du kan logga in med det.';
