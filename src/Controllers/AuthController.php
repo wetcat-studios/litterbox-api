@@ -50,6 +50,10 @@ class AuthController extends Controller {
 	  if (!is_null($user)) {
 			$composedToken = TokenHelper::composeToken($user);
       
+      $now = \Carbon\Carbon::now();
+      $user->last_login = $now->toDateTimeString();
+      $user->save();
+      
       return response()->json([
         'status'    => 200,
         'data'      => [$composedToken],
