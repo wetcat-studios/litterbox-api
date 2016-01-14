@@ -217,7 +217,7 @@ class UserController extends Controller {
     
     // Get the selected user
     $user = User::where('uuid', $id)->first();
-    $isCurrentUser = strcmp($user->uuid, $id);
+    $isCurrentUser = (strcmp($user->uuid, $id) == 0);
     
     if (!$isCurrentUser && !$userIsAdmin) {
       return response()->json([
