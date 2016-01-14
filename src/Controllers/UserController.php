@@ -117,7 +117,7 @@ class UserController extends Controller {
       'note'      => $request->input('note'),
 
       'password'  => Hash::make($randomPw),
-      'role'      => ( is_int($request->input('role')) ? $request->input('role') : RoleHelper::getRoleValue($request->input('role')) )
+      'role'      => ( is_numeric($request->input('role')) ? intval($request->input('role')) : RoleHelper::getRoleValue($request->input('role')) )
     ];
 
     $user = User::create($userData);
