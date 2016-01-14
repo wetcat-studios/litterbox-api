@@ -211,12 +211,15 @@ class UserController extends Controller {
   public function update(Request $request, $id)
   {
     // Make sure the user is either superadmin or editing same user as is logged in
-    
     $token = $request->header('X-Litterbox-Token');
+    $currentUser = AuthHelper::getUser($token);
+    $userIsAdmin = RoleHelper::verify($currentUser->role, 'admin');
     
-    // Verify that the user is authenticated using helper method
-    $user = AuthHelper::getUser($token);
-    if (!RoleHelper::verify($user->role, 'admin') && strcmp($user->uuid, $id) !== 0) {
+    // Get the selected user
+    $user = User::where('uuid', $id)->first();
+    $isCurrentUser = strcmp($user->uuid, $id);
+    
+    if (!$isCurrentUser && !$userIsAdmin) {
       return response()->json([
         'status'    => 401,
         'data'      => null,
