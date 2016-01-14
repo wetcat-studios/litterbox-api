@@ -93,6 +93,17 @@ class UserController extends Controller {
         'messages'  => $messages
       ], 400);
     }
+    
+    // Make sure a user with the email doesn't exist!
+    $emailLookup = User::where('email', $request->input('email'))->first();
+    if (!!$emailLookup) {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'User',
+        'messages'  => ['A user with that E-Mail already exists']
+      ], 400);
+    }
 
     $randomPw = str_random(8);
 
