@@ -107,8 +107,6 @@ class UserController extends Controller {
 
     $randomPw = str_random(8);
 
-    $roleInt = RoleHelper::getRoleValue($request->input('role'));
-
     $userData = [
       'uuid'      => Uuid::uuid4()->toString(),
       'firstname' => $request->input('firstname'),
@@ -119,7 +117,7 @@ class UserController extends Controller {
       'note'      => $request->input('note'),
 
       'password'  => Hash::make($randomPw),
-      'role'      => $roleInt
+      'role'      => ( is_int($request->input('role')) ? $request->input('role') : RoleHelper::getRoleValue($request->input('role')) )
     ];
 
     $user = User::create($userData);
