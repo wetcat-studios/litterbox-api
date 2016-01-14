@@ -142,13 +142,15 @@ class UserController extends Controller {
 
     // Also attach the password to the email (overwrite the hashed pw, we don't need that anymore)
     $userData['password'] = $randomPw;
-/*
-    Mail::queue('emails.welcome', ['user' => $userData], function ($message) use ($userData) {
-      $message->from(env('MAIL_DEFAULT_FROM', ''))
-              ->to($user['email'])
-              ->subject('Testing');
+    
+    $msg = 'En ny användare har skapats i ditt namn, ditt lösenord är [ ' . $randomPw . ' ], du kan ändra detta lösenord första gången du loggar in.';
+    
+    // Send an email
+    Mail::raw($msg, function ($emailmsg) use ($user) {
+        $emailmsg->from('no-reply@goodtrade.se', 'Goodtrade AB');
+        $emailmsg->to($user->email, $user->name)->subject('Välkommen');
     });
-*/
+    
     // We made it! Send a success!
     return response()->json([
       'status'    => 201,
