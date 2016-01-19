@@ -282,9 +282,19 @@ class ArticleController extends Controller {
     $relation = $segment->articles()->save($article);
 
     // Find and connect to manufacturer (also add the manufacturer article number to relation)
-    $manufacturerId = $request->input('manufacturer');
-    $manufacturer = Manufacturer::where('uuid', $manufacturerId)->firstOrFail();
-    $relation = $manufacturer->articles()->save($article);
+    $manufacturerString = $request->input('manufacturer');
+    // If the manufacturer string is a UUID the manufacturer should just be linked...
+    if (Uuid::isValid(trim($manufacturerString))) {
+      $manufacturer = Manufacturer::where('uuid', trim($manufacturerString))->first();
+    }
+    // ...otherwise create a new manufacturer node with just a name and uuid
+    else {
+      $manufacturer = Manufacturer::create([
+        'uuid'  => Uuid::uuid4()->toString(),
+        'name'  => $manufacturerString
+      ]);
+    }
+    $rel = $manufacturer->articles()->save($article);
     
     // Save the number to the relation
     $relation->number = $request->input('manufacturernumber');
