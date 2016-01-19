@@ -166,8 +166,11 @@ class ArticleController extends Controller {
       'brand' => 'required|string',
 
       // Manufacturer validation
-      'manufacturer'     => 'required|string',
-      'manufacturernumber' => 'string',
+      'manufacturer'          => 'required|string', // Wither UUID or name
+      'manufacturernumber'    => 'string', // Article number at the manufacturer, always optional
+      'manufacturercurrency'  => 'string', // Required when we want to create an article with a new manufacturer
+      'manufacturerrebate'    => 'string', // Optional when we want to create an article with a new manufacturer
+      'manufacturershipping'  => 'string', // Optional when we want to create an article with a new manufacturer
       
       // Customer links
       'customers'   => 'string', // UUID for the selected customers
@@ -289,16 +292,32 @@ class ArticleController extends Controller {
     }
     // ...otherwise create a new manufacturer node with just a name and uuid
     else {
+      // To do this we actually need the currency too!
+      if (!$request->has('manufacturercurrency')) {
+        return response()->json([
+          'status'    => 400,
+          'data'      => null,
+          'heading'   => 'Article',
+          'messages'  => ['To create a new manufacturer we need to select the currency']
+        ], 400);
+      }
       $manufacturer = Manufacturer::create([
-        'uuid'  => Uuid::uuid4()->toString(),
-        'name'  => $manufacturerString
+        'uuid'      => Uuid::uuid4()->toString(),
+        'name'      => $manufacturerString,
+        'rebate'    => ($request->has('manufacturerrebate') ? $request->input('manufacturerrebate') : 0), // This is optional, will default to 0
+        'shipping'  => ($request->has('manufacturershipping') ? $request->input('manufacturershipping') : 0), // This is optional, will default to 0
       ]);
+      // Also link the currency
+      $currency = Currency::where('uuid', $request->input('manufacturercurrency'))->first();
+      $currency->manufacturers()->save($manufacturer);
     }
-    $rel = $manufacturer->articles()->save($article);
+    $relation = $manufacturer->articles()->save($article);
     
     // Save the number to the relation
-    $relation->number = $request->input('manufacturernumber');
-    $relation->save();
+    if ($request->has('manufacturernumber')) {
+      $relation->number = $request->input('manufacturernumber');
+      $relation->save();
+    }
 
     // Find and connect to Currency
 //    $currencyId = $request->input('currency');
@@ -330,7 +349,6 @@ class ArticleController extends Controller {
 
     // Attach the picture
     if ($request->has('filename')) {
-
       // Single or multiple pictures?
       if (strpos($request->input('filename'), ',') !== false) {
         // Multiple files
@@ -347,9 +365,7 @@ class ArticleController extends Controller {
         if (!!$picture) {
           $rel = $article->pictures()->save($picture);
         }
-      }
-
-      
+      }      
     }
 
     // We made it! Send a success!
