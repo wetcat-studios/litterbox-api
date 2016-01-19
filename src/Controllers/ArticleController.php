@@ -115,45 +115,45 @@ class ArticleController extends Controller {
       'ean'     => 'required|string',
       'price'         => 'required',
       'discountrate'  => 'integer',
-      'restockthreshold' => 'required|integer',
-      'restockamount'    => 'required|integer',
+      'restockthreshold' => 'integer',
+      'restockamount'    => 'integer',
 //      'expired'         => 'required',
 //      'sustainability'    => 'required|integer', // Moved to segment
       'filename'        => 'string',
-      'intrastat'       => 'required|string',
+      'intrastat'       => 'string',
       'description'     => 'string', // Optional description
       
-      // Package (one single unit)
-      'packageweight'  => 'required',
-      'packagewidth'   => 'required',
-      'packagelength'  => 'required',
-      'packageheight'  => 'required',
+      // Package (one single unit) // None of these 
+//      'packageweight'  => 'required',
+//      'packagewidth'   => 'required',
+//      'packagelength'  => 'required',
+//      'packageheight'  => 'required',
       
       // Colli (a full set of units)
-      'colliweight'  => 'required',
-      'colliwidth'   => 'required',
-      'collilength'  => 'required',
-      'colliheight'  => 'required',
+//      'colliweight'  => 'required',
+//      'colliwidth'   => 'required',
+//      'collilength'  => 'required',
+//      'colliheight'  => 'required',
 
       // Packaging units
-      'packagepercolli'    => 'required|integer',
-      'collipereupallet'   => 'required|integer',
-      'collipereulav'      => 'required|integer',
-      'colliperhalfpallet' => 'required|integer',
-      'colliperhalflav'    => 'required|integer',
-      'collipershippallet' => 'required|integer',
-      'collipershiplav'    => 'required|integer',
+      'packagepercolli'    => 'integer',
+      'collipereupallet'   => 'integer',
+      'collipereulav'      => 'integer',
+      'colliperhalfpallet' => 'integer',
+      'colliperhalflav'    => 'integer',
+      'collipershippallet' => 'integer',
+      'collipershiplav'    => 'integer',
       
       // Nutrients
-      'kj'            => 'required',
-      'kcal'          => 'required',
-      'fat'           => 'required',
-      'saturatedfat'  => 'required',
-      'carbs'         => 'required',
-      'sugar'         => 'required',
-      'fibers'        => 'required',
-      'proteins'      => 'required',
-      'salt'          => 'required',
+      'kj'            => 'numeric',
+      'kcal'          => 'numeric',
+      'fat'           => 'numeric',
+      'saturatedfat'  => 'numeric',
+      'carbs'         => 'numeric',
+      'sugar'         => 'numeric',
+      'fibers'        => 'numeric',
+      'proteins'      => 'numeric',
+      'salt'          => 'numeric',
       
       // Ingredients (comma separated text)
       'ingredients' => 'string',
@@ -167,7 +167,7 @@ class ArticleController extends Controller {
 
       // Manufacturer validation
       'manufacturer'     => 'required|string',
-      'manufacturernumber' => 'required|string',
+      'manufacturernumber' => 'string',
       
       // Customer links
       'customers'   => 'string', // UUID for the selected customers
