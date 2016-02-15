@@ -47,191 +47,246 @@ class CreatedByProvider extends ServiceProvider
     
     Address::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Article::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Batch::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Brand::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Campaign::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Category::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Chain::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Chainsegment::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     City::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     County::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Country::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Currency::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Customer::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Customersegment::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Email::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Group::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Ingredient::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Manufacturer::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Order::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Phone::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Picture::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Pricelist::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Rate::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Restock::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Segment::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
     });
 
     Thumbnail::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);
+      }
+      
     });
     
     Intrastat::created(function ($model) {
       $token = Request::header('X-Litterbox-Token');
-      $secret = TokenHelper::getSecret($token);
-      $user = User::where('token', $secret)->first();
-      $rel = $model->createdBy()->save($user);
+      if (isset($token)) {
+        $secret = TokenHelper::getSecret($token);
+        $user = User::where('token', $secret)->first();
+        $rel = $model->createdBy()->save($user);  
+      }
       
       \Analytics::trackEvent('Intrastat', 'created', $model->uuid);
     });
