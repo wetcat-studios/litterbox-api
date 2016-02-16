@@ -41,27 +41,26 @@ class ArticleController extends Controller {
   public function index(Request $request)
   {
     $articles = [];
-
+    
+    // If we're paginating...
     if ($request->has('limit')) {
-      $per_page = $request->input('limit');
-    }
-    
-    if ($request->has('page')) {
-      $page = $request->input('page');
-    }
-    
-    if ($request->has('rel')) {
-      $rels = explode('_', $request->input('rel'));
-      $articles = Article::with($rels);
-      if (isset($page) && $page > 1) {
-        $articles->skip(($page * $per_page));
+      $limit = $request->input('limit');
+      if ($request->has('rel')) {
+        $rels = explode('_', $request->input('rel'));
+        $articles = Article::with($rels)->paginate($limit);
+      } else {
+        $articles = Article::paginate($limit);
       }
-      if (isset($per_page)) {
-        $articles->take($per_page);
+    } 
+    
+    // ...otherwise fetch all.
+    else {
+      if ($request->has('rel')) {
+        $rels = explode('_', $request->input('rel'));
+        $articles = Article::with($rels)->get();
+      } else {
+        $articles = Article::all();
       }
-      $articles->get();
-    } else {
-      $articles = Article::all();
     }
 
     // Attach the stock numbers (incomming, outgoing, total)
