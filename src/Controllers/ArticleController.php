@@ -46,11 +46,18 @@ class ArticleController extends Controller {
       $per_page = $request->input('limit');
     }
     
+    if ($request->has('page')) {
+      $page = $request->input('page');
+    }
+    
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
       $articles = Article::with($rels);
+      if (isset($page) && $page > 1) {
+        $articles->skip(($page * $per_page));
+      }
       if (isset($per_page)) {
-        $articles->paginate($per_page);
+        $articles->take($per_page);
       }
       $articles->get();
     } else {
