@@ -52,11 +52,13 @@ class ArticleController extends Controller {
         $articles = Article::paginate($limit);
       }
       // Attach the stock numbers (incomming, outgoing, total)
+/*
       foreach ($articles->data as $article) {
         $article->incomming = $article->incomming();
         $article->outgoing = $article->outgoing();
         $article->total = $article->total();
       }
+*/
     } 
     
     // ...otherwise fetch all.
@@ -68,13 +70,16 @@ class ArticleController extends Controller {
         $articles = Article::all();
       }
       // Attach the stock numbers (incomming, outgoing, total)
+/*
       foreach ($articles as $article) {
         $article->incomming = $article->incomming();
         $article->outgoing = $article->outgoing();
         $article->total = $article->total();
       }
+*/
     }
 
+/*
     if ($request->has('query')) {
       $query = $request->input('query');
 
@@ -100,11 +105,11 @@ class ArticleController extends Controller {
         ]);
       } 
     }
-
+*/
 
     return response()->json([
       'status'    => 200,
-      'data'      => $articles,
+      'data'      => $articles->toArray(),
       'heading'   => null,
       'messages'  => null
     ], 200);
