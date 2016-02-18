@@ -45,7 +45,6 @@ Route::group(['middleware' => ['cors', 'litterbox-auth']], function ()
   Route::resource('customers', 'Wetcat\Litterbox\Controllers\CustomerController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('customersegments', 'Wetcat\Litterbox\Controllers\CustomerSegmentController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('emails', 'Wetcat\Litterbox\Controllers\EmailController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-  Route::resource('groups', 'Wetcat\Litterbox\Controllers\GroupController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('groups.pricelists', 'Wetcat\Litterbox\Controllers\PricelistController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('intrastat', 'Wetcat\Litterbox\Controllers\IntrastatController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('orders', 'Wetcat\Litterbox\Controllers\OrderController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
