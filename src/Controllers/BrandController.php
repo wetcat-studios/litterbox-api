@@ -20,7 +20,7 @@ class BrandController extends Controller {
    */
   public function __construct()
   {
-    $this->middleware('litterbox-auth');
+    $this->middleware('litterbox-auth', ['only' => ['store', 'update', 'destroy']]);
     $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
   }
   

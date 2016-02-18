@@ -14,6 +14,17 @@ use Ramsey\Uuid\Uuid;
 class ManufacturerController extends Controller {
 
   /**
+   * Instantiate a new UserController instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+    $this->middleware('litterbox-auth', ['only' => ['store', 'update', 'destroy']]);
+    $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
+  }
+  
+  /**
    * Display a listing of the resource.
    *
    * @return Response
