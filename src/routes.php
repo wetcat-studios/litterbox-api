@@ -30,6 +30,7 @@ Route::group(['middleware' => ['cors']], function () {
   Route::resource('manufacturers', 'Wetcat\Litterbox\Controllers\ManufacturerController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('pictures', 'Wetcat\Litterbox\Controllers\PictureController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('segments', 'Wetcat\Litterbox\Controllers\SegmentController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+  Route::resource('groups', 'Wetcat\Litterbox\Controllers\GroupController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
 });
 
 // API
