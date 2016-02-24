@@ -53,11 +53,18 @@ class ArticleController extends Controller {
     // Attach relations
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
-      $articles = Article::with($rels)->paginate($limit);
+      $q = Article::with($rels);
     } else {
-      $articles = Article::paginate($limit);
+      $q = Article::with([]);
+    }
+    
+    // Do filtering
+    if ($request->has('name')) {
+      $q->where('name', $request->input('name'));
     }
 
+    $articles = $q->paginate($limit);
+    
     return response()->json([
       'status'    => 200,
       'data'      => $articles->toArray(),
