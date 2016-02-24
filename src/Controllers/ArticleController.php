@@ -42,70 +42,21 @@ class ArticleController extends Controller {
   {
     $articles = [];
     
-    // If we're paginating...
+    // Default limit per request
+    $limit = 10;
+    
+    // ...but if there's a set limit we'll follow that
     if ($request->has('limit')) {
       $limit = $request->input('limit');
-      if ($request->has('rel')) {
-        $rels = explode('_', $request->input('rel'));
-        $articles = Article::with($rels)->paginate($limit);
-      } else {
-        $articles = Article::paginate($limit);
-      }
-      // Attach the stock numbers (incomming, outgoing, total)
-/*
-      foreach ($articles->data as $article) {
-        $article->incomming = $article->incomming();
-        $article->outgoing = $article->outgoing();
-        $article->total = $article->total();
-      }
-*/
-    } 
+    }
     
-    // ...otherwise fetch all.
-    else {
-      if ($request->has('rel')) {
-        $rels = explode('_', $request->input('rel'));
-        $articles = Article::with($rels)->get();
-      } else {
-        $articles = Article::all();
-      }
-      // Attach the stock numbers (incomming, outgoing, total)
-/*
-      foreach ($articles as $article) {
-        $article->incomming = $article->incomming();
-        $article->outgoing = $article->outgoing();
-        $article->total = $article->total();
-      }
-*/
+    // Attach relations
+    if ($request->has('rel')) {
+      $rels = explode('_', $request->input('rel'));
+      $articles = Article::with($rels)->paginate($limit);
+    } else {
+      $articles = Article::paginate($limit);
     }
-
-/*
-    if ($request->has('query')) {
-      $query = $request->input('query');
-
-      $filterable = $articles->toArray();
-
-      $articles = array_filter($filterable, function ($article) use ($query) {
-        return (stripos($article['name'], $query) !== false);
-      });
-    }
-
-    if ($request->has('formatted')) {
-      if ($request->input('formatted') === 'semantic') {
-        $out = [];
-        foreach ($articles as $article) {
-          $out[] = [
-            'name' => (is_object($article) ? $article->name : $article['name']),
-            'value' => (is_object($article) ? $article->uuid : $article['uuid'])
-          ];
-        }
-        return response()->json([
-          'success' => true,
-          'results' => $out
-        ]);
-      } 
-    }
-*/
 
     return response()->json([
       'status'    => 200,
@@ -114,17 +65,7 @@ class ArticleController extends Controller {
       'messages'  => null
     ], 200);
   }
-
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    // Not used
-  }
-
+  
   /**
    * Store a newly created resource in storage.
    *
@@ -421,17 +362,6 @@ class ArticleController extends Controller {
       'heading'   => 'Article',
       'messages'  => null
     ], 200);
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {
-    //
   }
 
   /**
