@@ -6,12 +6,11 @@ use Wetcat\Litterbox\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 
-use Wetcat\Litterbox\Models\Chain;
-use Wetcat\Litterbox\Models\Chainsegment;
+use Wetcat\Litterbox\Models\Customersegment;
 
 use Ramsey\Uuid\Uuid;
 
-class ChainSegmentController extends Controller {
+class CustomerSegmentController extends Controller {
 
   /**
    * Instantiate a new UserController instance.
@@ -44,9 +43,9 @@ class ChainSegmentController extends Controller {
     // Attach relations
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
-      $q = ChainSegment::with($rels);
+      $q = Customersegment::with($rels);
     } else {
-      $q = ChainSegment::with([]);
+      $q = Customersegment::with([]);
     }
     
     // Do filtering
@@ -83,41 +82,33 @@ class ChainSegmentController extends Controller {
   {
     $validator = Validator::make($request->all(), [
       'name'    => 'required|string',
-
-      // The chain to connect to (uuid)
-      'chain'   => 'required|string'
     ]);
+
     if ($validator->fails()) {
       $messages = [];
       foreach ($validator->errors()->all() as $message) {
         $messages[] = $message;
       }
       return response()->json([
-        'status'  => 400,
-        'data'    => null,
-        'heading'   => 'Chain segment',
-        'messages' => $messages
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Customer segment',
+        'messages'  => $messages
       ], 400);
     }
 
-    $uuid4 = Uuid::uuid4();
-
     $segmentData = [
-      'uuid'  => $uuid4->toString(),
+      'uuid'  => Uuid::uuid4()->toString(),
       'name' => $request->input('name')
     ];
 
-    $segment = Chainsegment::create($segmentData);
-
-    // Connect to the chain
-    $chain = Chain::where('uuid', $request->input('chain'))->first();
-    $rel = $chain->segments()->save($segment);
+    $segment = Customersegment::create($segmentData);
 
     return response()->json([
-      'status'  => 201,
-      'data'    => $segment,
-      'heading'   => 'Chain segment',
-      'message' => ['Chain segment created'],
+      'status'    => 201,
+      'data'      => $segment,
+      'heading'   => 'Customer segment',
+      'message'   => ['Customer segment created'],
     ], 201);
   }
 
@@ -130,15 +121,15 @@ class ChainSegmentController extends Controller {
   public function show(Request $request, $id)
   {
     if ($request->has('rel')) {
-      $chain = Chain::with($rels)->where('uuid', $id)->get();
+      $customersegment = Customersegment::with($rels)->where('uuid', $id)->get();
     } else {
-      $chain = Chain::where('uuid', $id)->get();
+      $customersegment = Customersegment::where('uuid', $id)->get();
     }
 
     return response()->json([
       'status'    => 200,
-      'data'      => $chain,
-      'heading'   => 'Chain',
+      'data'      => $customersegment,
+      'heading'   => 'Customersegment',
       'messages'  => null
     ], 200);
   }
@@ -160,9 +151,43 @@ class ChainSegmentController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function update($id)
+  public function update(Request $request, $uuid)
   {
-    //
+    $validator = Validator::make($request->all(), [
+      'name' => 'string',
+    ]);
+    
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Customersegment',
+        'messages'  => $messages
+      ], 400);
+    }
+    
+    $segment = Customersegment::where('uuid', $uuid)->first();
+    
+    if (!!$segment) {
+      
+      if ($request->has('name')) {
+        $segment->name = $request->input('name');
+      }
+      
+      $segment->save();
+      
+    } else {
+      return response()->json([
+        'status'    => 400,
+        'data'      => null,
+        'heading'   => 'Customersegment',
+        'messages'  => ['Customersegment not found.']
+      ], 400);
+    }
   }
 
   /**
@@ -171,9 +196,18 @@ class ChainSegmentController extends Controller {
    * @param  int  $id
    * @return Response
    */
-  public function destroy($id)
+  public function destroy($uuid)
   {
-    //
+    $segment = Customersegment::where('uuid', $uuid)->first();
+
+    $segment->delete();
+
+    return response()->json([
+      'status'    => 200,
+      'data'      => $segment,
+      'heading'   => 'Customersegment',
+      'messages'  => ['Customersegment ' . $segment->name . ' deleted.']
+    ], 200); 
   }
 
 }
