@@ -32,44 +32,38 @@ class BrandController extends Controller {
   public function index(Request $request)
   {
     $brands = [];
-
+    
+    // Default limit per request
+    $limit = 10;
+    
+    // ...but if there's a set limit we'll follow that
+    if ($request->has('limit')) {
+      $limit = $request->input('limit');
+    }
+    
+    // Attach relations
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
-      $brands = Brand::with($rels)->get();
+      $q = Brand::with($rels);
     } else {
-      $brands = Brand::all();
+      $q = Brand::with([]);
     }
-
-    if ($request->has('query')) {
-      $query = $request->input('query');
-
-      $filterable = $brands->toArray();
-
-      $brands = array_filter($filterable, function ($brand) use ($query) {
-        return (stripos($brand['name'], $query) !== false);
+    
+    // Do filtering
+    if ($request->has('name')) {
+      $name = $request->input('name');
+      //$q->where('name', $request->input('name'));
+      $q->where(function ($query) use ($name) {
+        $query->where('name', '=~', '(?i).*' . $name . '.*');
       });
     }
 
-    if ($request->has('formatted')) {
-      if ($request->input('formatted') === 'semantic') {
-        $out = [];
-        foreach ($brands as $brand) {
-          $out[] = [
-            'name' => (is_object($brand) ? $brand->name : $brand['name']),
-            'value' => (is_object($brand) ? $brand->uuid : $brand['uuid'])
-          ];
-        }
-        return response()->json([
-          'success' => true,
-          'results' => $out
-        ]);
-      } 
-    }
-
+    $brands = $q->paginate($limit);
+    
     return response()->json([
       'status'    => 200,
-      'data'      => $brands,
-      'heading'   => 'Brand',
+      'data'      => $brands->toArray(),
+      'heading'   => null,
       'messages'  => null
     ], 200);
   }
