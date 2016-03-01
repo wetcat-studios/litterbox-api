@@ -51,11 +51,7 @@ class BrandController extends Controller {
     
     // Do filtering
     if ($request->has('name')) {
-      $name = $request->input('name');
-      //$q->where('name', $request->input('name'));
-      $q->where(function ($query) use ($name) {
-        $query->where('name', '=~', '(?i).*' . $name . '.*');
-      });
+      $q->where('name', $request->input('name'));
     }
 
     $brands = $q->paginate($limit);
