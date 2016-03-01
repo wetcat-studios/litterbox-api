@@ -16,6 +16,17 @@ use Ramsey\Uuid\Uuid;
 class ChainController extends Controller {
 
   /**
+   * Instantiate a new UserController instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+    $this->middleware('litterbox-auth', ['only' => ['store', 'update', 'destroy']]);
+    $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
+  }
+  
+  /**
    * Display a listing of the resource.
    *
    * @return Response
@@ -23,44 +34,34 @@ class ChainController extends Controller {
   public function index(Request $request)
   {
     $chains = [];
-
+    
+    // Default limit per request
+    $limit = 10;
+    
+    // ...but if there's a set limit we'll follow that
+    if ($request->has('limit')) {
+      $limit = $request->input('limit');
+    }
+    
+    // Attach relations
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
-      $chains = Chain::with($rels)->get();
+      $q = Chain::with($rels);
     } else {
-      $chains = Chain::all();
+      $q = Chain::with([]);
+    }
+    
+    // Do filtering
+    if ($request->has('name')) {
+      $q->where('name', $request->input('name'));
     }
 
-    if ($request->has('query')) {
-      $query = $request->input('query');
-
-      $filterable = $chains->toArray();
-
-      $chains = array_filter($filterable, function ($chain) use ($query) {
-        return (stripos($chain['name'], $query) !== false);
-      });
-    }
-
-    if ($request->has('formatted')) {
-      if ($request->input('formatted') === 'semantic') {
-        $out = [];
-        foreach ($chains as $chain) {
-          $out[] = [
-            'name' => (is_object($chain) ? $chain->name : $chain['name']),
-            'value' => (is_object($chain) ? $chain->uuid : $chain['uuid'])
-          ];
-        }
-        return response()->json([
-          'success' => true,
-          'results' => $out
-        ]);
-      } 
-    }
+    $chains = $q->paginate($limit);
     
     return response()->json([
       'status'    => 200,
-      'data'      => $chains,
-      'heading'   => 'Chain',
+      'data'      => $chains->toArray(),
+      'heading'   => null,
       'messages'  => null
     ], 200);
   }
