@@ -13,6 +13,17 @@ use Ramsey\Uuid\Uuid;
 class CustomerSegmentController extends Controller {
 
   /**
+   * Instantiate a new UserController instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+    $this->middleware('litterbox-auth', ['only' => ['store', 'update', 'destroy']]);
+    $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
+  }
+  
+  /**
    * Display a listing of the resource.
    *
    * @return Response
@@ -20,44 +31,34 @@ class CustomerSegmentController extends Controller {
   public function index(Request $request)
   {
     $segments = [];
-
+    
+    // Default limit per request
+    $limit = 10;
+    
+    // ...but if there's a set limit we'll follow that
+    if ($request->has('limit')) {
+      $limit = $request->input('limit');
+    }
+    
+    // Attach relations
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
-      $segments = Customersegment::with($rels)->get();
+      $q = Customersegment::with($rels);
     } else {
-      $segments = Customersegment::all();
+      $q = Customersegment::with([]);
+    }
+    
+    // Do filtering
+    if ($request->has('name')) {
+      $q->where('name', $request->input('name'));
     }
 
-    if ($request->has('query')) {
-      $query = $request->input('query');
-
-      $filterable = $segments->toArray();
-
-      $segments = array_filter($filterable, function ($segment) use ($query) {
-        return (stripos($segment['name'], $query) !== false);
-      });
-    }
-
-    if ($request->has('formatted')) {
-      if ($request->input('formatted') === 'semantic') {
-        $out = [];
-        foreach ($segments as $segment) {
-          $out[] = [
-            'name' => (is_object($segment) ? $segment->name : $segment['name']),
-            'value' => (is_object($segment) ? $segment->uuid : $segment['uuid'])
-          ];
-        }
-        return response()->json([
-          'success' => true,
-          'results' => $out
-        ]);
-      } 
-    }
-
+    $segments = $q->paginate($limit);
+    
     return response()->json([
       'status'    => 200,
-      'data'      => $segments,
-      'heading'   => 'Customer segment',
+      'data'      => $segments->toArray(),
+      'heading'   => null,
       'messages'  => null
     ], 200);
   }
