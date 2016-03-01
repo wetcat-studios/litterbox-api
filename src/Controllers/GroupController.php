@@ -33,18 +33,34 @@ class GroupController extends Controller {
   public function index(Request $request)
   {
     $groups = [];
-
+    
+    // Default limit per request
+    $limit = 10;
+    
+    // ...but if there's a set limit we'll follow that
+    if ($request->has('limit')) {
+      $limit = $request->input('limit');
+    }
+    
+    // Attach relations
     if ($request->has('rel')) {
       $rels = explode('_', $request->input('rel'));
-      $groups = Group::with($rels)->get();
+      $q = Group::with($rels);
     } else {
-      $groups = Group::all();
+      $q = Group::with([]);
+    }
+    
+    // Do filtering
+    if ($request->has('name')) {
+      $q->where('name', $request->input('name'));
     }
 
+    $groups = $q->paginate($limit);
+    
     return response()->json([
       'status'    => 200,
-      'data'      => $groups,
-      'heading'   => 'Group',
+      'data'      => $groups->toArray(),
+      'heading'   => null,
       'messages'  => null
     ], 200);
   }
