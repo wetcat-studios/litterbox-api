@@ -22,137 +22,103 @@ use Ramsey\Uuid\Uuid;
 
 class ArticleController extends Controller {
 
-  /**
-   * Instantiate a new UserController instance.
-   *
-   * @return void
-   */
+
   public function __construct()
   {
     $this->middleware('litterbox-auth', ['only' => ['store', 'update', 'destroy']]);
     $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
   }
   
-  /**
-   * Display a listing of the resource.
-   *
-   * @return Response
-   */
-  public function index(Request $request)
+  
+  public function index (Request $request)
   {
-    $articles = [];
-    
-    // Default limit per request
-    $limit = 10;
-    
-    // ...but if there's a set limit we'll follow that
-    if ($request->has('limit')) {
-      $limit = $request->input('limit');
-    }
-    
-    // Attach relations
-    if ($request->has('rel')) {
-      $rels = explode('_', $request->input('rel'));
-      $q = Article::with($rels);
-    } else {
-      $q = Article::with([]);
-    }
-    
-    // Do filtering
-    if ($request->has('name')) {
-      $q->where('name', $request->input('name'));
-    }
-
-    $articles = $q->paginate($limit);
+    $articles = Article::all();
     
     return response()->json([
-      'status'    => 200,
-      'data'      => $articles->toArray(),
-      'heading'   => null,
-      'messages'  => null
+      'status'  =>  200,
+      'data'    =>  $articles->toArray(),
+    ], 200);
+  }
+
+
+  public function show (Request $request, $articleId)
+  {
+    $article = Article::where('uuid', $articleId)->first();
+
+    if (!$article) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Article was not found'],
+      ], 404);
+    }
+    
+    return response()->json([
+      'status'  =>  200,
+      'data'    =>  $article,
     ], 200);
   }
   
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @return Response
-   */
-  public function store(Request $request)
+  
+  public function store (Request $request)
   {
     $validator = Validator::make($request->all(), [
-      // Article base validation
-      'name'    => 'required|string',
-      'number'  => 'required',
-      'ean'     => 'required|string',
-      'price'         => 'required',
-      'discountrate'  => 'integer',
-      'restockthreshold' => 'integer',
-      'restockamount'    => 'integer',
-//      'expired'         => 'required',
-//      'sustainability'    => 'required|integer', // Moved to segment
-      'filename'        => 'string',
-      'intrastat'       => 'string',
-      'description'     => 'string', // Optional description
-      
-      // Package (one single unit) // None of these 
-//      'packageweight'  => 'required',
-//      'packagewidth'   => 'required',
-//      'packagelength'  => 'required',
-//      'packageheight'  => 'required',
-      
-      // Colli (a full set of units)
-//      'colliweight'  => 'required',
-//      'colliwidth'   => 'required',
-//      'collilength'  => 'required',
-//      'colliheight'  => 'required',
+      'name'              =>  'required|string',
+      'articleNumber'     =>  'required|string',
+      'ean'               =>  'required|string',
+      'price'             =>  'required',
+      'discountRate'      =>  'integer',
+      'restockThreshold'  =>  'integer',
+      'restockAmount'     =>  'integer',
+      'filename'          =>  'string',
+      'intrastat'         =>  'string',
+      'description'       =>  'string',
+    ]);
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    =>  400,
+        'messages'  =>  $messages,
+      ], 400);
+    }
 
-      // Packaging units
-      'packagepercolli'    => 'integer',
-      'collipereupallet'   => 'integer',
-      'collipereulav'      => 'integer',
-      'colliperhalfpallet' => 'integer',
-      'colliperhalflav'    => 'integer',
-      'collipershippallet' => 'integer',
-      'collipershiplav'    => 'integer',
-      
-      // Nutrients
-      'kj'            => 'numeric',
-      'kcal'          => 'numeric',
-      'fat'           => 'numeric',
-      'saturatedfat'  => 'numeric',
-      'carbs'         => 'numeric',
-      'sugar'         => 'numeric',
-      'fibers'        => 'numeric',
-      'proteins'      => 'numeric',
-      'salt'          => 'numeric',
-      
-      // Ingredients (comma separated text)
-      'ingredients' => 'string',
+    $article = Article::create([
+      'uuid'              =>  Uuid::uuid4()->toString(),
+      'name'              =>  $request->input('name'),
+      'articleNumber'     =>  $request->input('articleNumber'),
+      'ean'               =>  $request->input('ean'),
+      'price'             =>  $request->input('price'),
+      'discountRate'      =>  $request->input('discountRate'),
+      'restockThreshold'  =>  $request->input('restockThreshold'),
+      'restockAmount'     =>  $request->input('restockAmount'),
+      'filename'          =>  $request->input('filename'),
+      'intrastat'         =>  $request->input('intrastat'),
+      'description'       =>  $request->input('description')
+    ]);
 
-      // Category validation
-      'category'    => 'required|string', // Single category (primary)
-      'categories'  => 'string', // This is a CSV string of "categories"
-
-      // Brand validation (just the uuid)
-      'brand' => 'required|string',
-
-      // Manufacturer validation
-      'manufacturer'          => 'required|string', // Wither UUID or name
-      'manufacturernumber'    => 'string', // Article number at the manufacturer, always optional
-      'manufacturercurrency'  => 'string', // Required when we want to create an article with a new manufacturer
-      'manufacturerrebate'    => 'string', // Optional when we want to create an article with a new manufacturer
-      'manufacturershipping'  => 'string', // Optional when we want to create an article with a new manufacturer
-      
-      // Customer links
-      'customers'   => 'string', // UUID for the selected customers
-      
-      // These are calculated once when the article is created, they can also
-      // be updated whenever certain variables in the system are changed.
-      'productCost' => 'numeric|required', 
-      'unitPrice'   => 'numeric|required',
-      'salesPrice'  => 'numeric|required',
-      'calculatedMargin' => 'numeric|required',
+    return response()->json([
+      'status'    =>  201,
+      'data'      =>  $article,
+      'messages'  =>  null
+    ], 201);
+  }
+  
+  
+  public function update (Request $request, $articleId)
+  {
+    $validator = Validator::make($request->all(), [
+      'name'              =>  'string',
+      'articleNumber'     =>  'string',
+      'ean'               =>  'string',
+      'price'             =>  'integer',
+      'discountRate'      =>  'integer',
+      'restockThreshold'  =>  'integer',
+      'restockAmount'     =>  'integer',
+      'filename'          =>  'string',
+      'intrastat'         =>  'string',
+      'description'       =>  'string',
     ]);
     if ($validator->fails()) {
       $messages = [];
@@ -161,244 +127,64 @@ class ArticleController extends Controller {
       }
       return response()->json([
         'status'    => 400,
-        'data'      => null,
-        'heading'   => 'Article',
         'messages'  => $messages
       ], 400);
     }
-
-    // Create the article on all data, except the links to other nodes
-    $articleData = $request->except('filename', 'category', 'categories', 'segment', 'brand', 'manufacturer', 'ingredients', 'customers');
-    $articleData['uuid'] = Uuid::uuid4()->toString();
-
-    // Create article (the model will select which values we will fill with...)
-    $article = Article::create($articleData);
     
-    // Find and connect to Primary Category
-    if (Uuid::isValid($request->input('category'))) {
-      $category = Category::where('uuid', $request->input('category'))->first();
-      $rel = $category->articles()->save($article);
-      $rel->type = 'primary';
-      $rel->save();
+    $article = Article::where('uuid', $articleId)->first();
+
+    if (!$article) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Article was not found'],
+      ], 404);
+    }
+    
+    $updatedData = $request->only([
+      'name',
+      'articleNumber',
+      'ean',
+      'price',
+      'discountRate',
+      'restockThreshold',
+      'restockAmount',
+      'filename',
+      'intrastat',
+      'description',
+    ]);
+    
+    $updated = $article->update($updatedData);
+    
+    if ($updated) {
+      return response()->json([
+        'status'    =>  200,
+        'messages'  =>  ['Updated article'],
+      ], 200);
     } else {
-      // Or if it's a string - create
-      $category = Category::where('name', $request->input('category'))->first();
-      if (!!$category) {
-        $rel = $category->articles()->save($article);
-        $rel->type = 'primary';
-        $rel->save();
-      } else {
-        $category = Category::create([
-          'uuid'  => Uuid::uuid4()->toString(),
-          'name'  => $request->input('category')
-        ]);
-        $rel = $category->articles()->save($article);
-        $rel->type = 'primary';
-        $rel->save();
-      }
+      return response()->json([
+        'status'    =>  400,
+        'messages'  =>  ['Failed to update article'],
+      ], 400);
     }
-
-    // Find and connect to Secondary categories
-    if ($request->has('categories')) {
-      $categories = explode(',', $request->input('categories'));
-      foreach ($categories as $cat) {
-        if (Uuid::isValid($cat)) {
-          $category = Category::where('uuid', $cat)->first();
-          $rel = $category->articles()->save($article);
-          $rel->type = 'secondary';
-          $rel->save();
-        } else {
-          // Or if it's a string - create
-          $category = Category::where('name', $cat)->first();
-          if (!!$category) {
-            $rel = $category->articles()->save($article);
-            $rel->type = 'secondary';
-            $rel->save();
-          } else {
-            $category = Category::create([
-              'uuid'  => Uuid::uuid4()->toString(),
-              'name'  => $cat
-            ]);
-            $rel = $category->articles()->save($article);
-            $rel->type = 'secondary';
-            $rel->save();
-          }
-        }
-      }
-    }
-    
-    // Find and connect to customers
-    if ($request->has('customers')) {
-      $customers = explode(',', $request->input('customers'));
-      foreach ($customers as $customer) {
-        if (Uuid::isValid($customer)) {
-          $customerNode = Customer::where('uuid', $customer)->first();
-          $rel = $customerNode->articles()->save($article);
-          $rel->save();
-        } else {
-          // Can't be anything but a valid UUID!'
-        }
-      }
-    }
-    
-    // Find and connect to Intrastat
-    $intrastatId = $request->input('intrastat');
-    $intrastat = Intrastat::where('uuid', $intrastatId)->first();
-    $relation = $intrastat->articles()->save($article);
-    
-    // Find and connect to Brand
-    $brandId = $request->input('brand');
-    $brand = Brand::where('uuid', $brandId)->firstOrFail();
-    $relation = $brand->articles()->save($article);
-
-    // Find and connect to Segment
-    $segmentId = $request->input('segment');
-    $segment = Segment::where('uuid', $segmentId)->firstOrFail();
-    $relation = $segment->articles()->save($article);
-
-    // Find and connect to manufacturer (also add the manufacturer article number to relation)
-    $manufacturerString = $request->input('manufacturer');
-    // If the manufacturer string is a UUID the manufacturer should just be linked...
-    if (Uuid::isValid(trim($manufacturerString))) {
-      $manufacturer = Manufacturer::where('uuid', trim($manufacturerString))->first();
-    }
-    // ...otherwise create a new manufacturer node with just a name and uuid
-    else {
-      // To do this we actually need the currency too!
-      if (!$request->has('manufacturercurrency')) {
-        return response()->json([
-          'status'    => 400,
-          'data'      => null,
-          'heading'   => 'Article',
-          'messages'  => ['To create a new manufacturer we need to select the currency']
-        ], 400);
-      }
-      $manufacturer = Manufacturer::create([
-        'uuid'      => Uuid::uuid4()->toString(),
-        'name'      => $manufacturerString,
-        'rebate'    => ($request->has('manufacturerrebate') ? $request->input('manufacturerrebate') : 0), // This is optional, will default to 0
-        'shipping'  => ($request->has('manufacturershipping') ? $request->input('manufacturershipping') : 0), // This is optional, will default to 0
-      ]);
-      // Also link the currency
-      $currency = Currency::where('uuid', $request->input('manufacturercurrency'))->first();
-      $currency->manufacturers()->save($manufacturer);
-    }
-    $relation = $manufacturer->articles()->save($article);
-    
-    // Save the number to the relation
-    if ($request->has('manufacturernumber')) {
-      $relation->number = $request->input('manufacturernumber');
-      $relation->save();
-    }
-
-    // Find and connect to Currency
-//    $currencyId = $request->input('currency');
-//    $currency = Currency::where('uuid', $currencyId)->firstOrFail();
-//    $relation = $currency->articles()->save($article);
-
-    // Save link to all ingredients
-    if ($request->has('ingredients')) {
-      $ingredients = explode(',', $request->input('ingredients'));
-      foreach ($ingredients as $value) {
-        $ingredient = null;
-
-        if (Uuid::isValid(trim($value))) {
-          $ingredient = Ingredient::where('uuid', trim($value))->first();
-        } else {
-          $ingredientData = [
-            'name'  => trim($value),
-            'uuid'  => Uuid::uuid4()->toString()
-          ];
-
-          $ingredient = Ingredient::create($ingredientData);
-
-          $messages[] = 'Created ingredient ' . $ingredient->name . '.';
-        }
-
-        $article->ingredients()->save($ingredient);
-      }
-    }
-
-    // Attach the picture
-    if ($request->has('filename')) {
-      // Single or multiple pictures?
-      if (strpos($request->input('filename'), ',') !== false) {
-        // Multiple files
-        $filenames = explode(',', $request->input('filename'));
-        foreach ($filenames as $filename) {
-          $picture = Picture::where('filename', $filename)->first();
-          if (!!$picture) {
-            $rel = $article->pictures()->save($picture);
-          }  
-        }
-      } else {
-        // Single file
-        $picture = Picture::where('filename', $request->input('filename'))->first();
-        if (!!$picture) {
-          $rel = $article->pictures()->save($picture);
-        }
-      }      
-    }
-
-    // We made it! Send a success!
-    return response()->json([
-      'status'    => 201,
-      'data'      => $article,
-      'heading'   => 'Article',
-      'messages'  => ['Article was created']
-    ], 201);
   }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function show(Request $request, $id)
+  
+  
+  public function destroy ($articleId)
   {
-    if ($request->has('rel')) {
-      $article = Article::with($rels)->where('uuid', $id)->get();
-    } else {
-      $article = Article::where('uuid', $id)->get();
+    $article = Article::where('uuid', $articleId)->first();
+
+    if (!$article) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Article was not found'],
+      ], 404);
     }
-
-    return response()->json([
-      'status'    => 200,
-      'data'      => $article,
-      'heading'   => 'Article',
-      'messages'  => null
-    ], 200);
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update($id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function destroy($uuid)
-  {
-    $article = Article::where('uuid', $uuid)->first();
-
+    
     $article->delete();
 
     return response()->json([
-      'status'    => 200,
-      'data'      => $article,
-      'heading'   => 'Article',
-      'messages'  => ['Article ' . $article->name . ' deleted.']
+      'status'    =>  200,
+      'messages'  =>  ["Article '$article->name' deleted"],
     ], 200);
   }
 

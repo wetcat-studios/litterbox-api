@@ -20,23 +20,46 @@ Route::group(['prefix' => 'user', 'middleware' => ['cors', 'litterbox-auth']], f
 
 // Unprotected API
 Route::group(['middleware' => ['cors']], function () {
-  Route::resource('articles', 'Wetcat\Litterbox\Controllers\ArticleController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-  Route::resource('brands', 'Wetcat\Litterbox\Controllers\BrandController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+  // Articles
+  Route::resource('articles', 'Wetcat\Litterbox\Controllers\ArticleController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+  Route::resource('articles.brands', 'Wetcat\Litterbox\Controllers\ArticleBrandController', ['only' => ['index', 'store', 'update', 'destroy']]);
+  Route::resource('articles.categories', 'Wetcat\Litterbox\Controllers\ArticleCategoryController', ['only' => ['index', 'store', 'update', 'destroy']]);
+  Route::resource('articles.manufacturers', 'Wetcat\Litterbox\Controllers\ArticleManufacturerController', ['only' => ['index', 'store', 'update', 'destroy']]);
+  Route::resource('articles.segments', 'Wetcat\Litterbox\Controllers\ArticleSegmentController', ['only' => ['index', 'store', 'update', 'destroy']]);
+    
+  // Brands 
+  Route::resource('brands', 'Wetcat\Litterbox\Controllers\BrandController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+  
+  // Chains
+  Route::resource('chains', 'Wetcat\Litterbox\Controllers\ChainController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+  
+  // Categories
+  Route::resource('categories', 'Wetcat\Litterbox\Controllers\CategoryController', ['only' => ['index', 'store']]);
+  
+  // Manufacturers
+  Route::resource('manufacturers', 'Wetcat\Litterbox\Controllers\ManufacturerController', ['only' => ['index', 'show', 'update', 'store', 'destroy']]);
+  
+  // Segments
+  Route::resource('segments', 'Wetcat\Litterbox\Controllers\SegmentController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+  
+  /*
   Route::resource('campaigns', 'Wetcat\Litterbox\Controllers\CampaignController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-  Route::resource('categories', 'Wetcat\Litterbox\Controllers\CategoryController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('chains', 'Wetcat\Litterbox\Controllers\ChainController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('chainsegments', 'Wetcat\Litterbox\Controllers\ChainSegmentController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('ingredients', 'Wetcat\Litterbox\Controllers\IngredientController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('manufacturers', 'Wetcat\Litterbox\Controllers\ManufacturerController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('pictures', 'Wetcat\Litterbox\Controllers\PictureController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
-  Route::resource('segments', 'Wetcat\Litterbox\Controllers\SegmentController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('groups', 'Wetcat\Litterbox\Controllers\GroupController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('customersegments', 'Wetcat\Litterbox\Controllers\CustomerSegmentController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+  */
 });
 
 // API
 Route::group(['middleware' => ['cors', 'litterbox-auth']], function ()
 {
+  // User routes
+  Route::resource('users.customers', 'Wetcat\Litterbox\Controllers\UsersCustomerController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+  
   Route::resource('addresses', 'Wetcat\Litterbox\Controllers\AddressController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('batches', 'Wetcat\Litterbox\Controllers\BatchController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('cities', 'Wetcat\Litterbox\Controllers\CityController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);

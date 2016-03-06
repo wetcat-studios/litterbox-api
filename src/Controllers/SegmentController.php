@@ -12,78 +12,80 @@ use Ramsey\Uuid\Uuid;
 
 class SegmentController extends Controller {
 
-  /**
-   * Display a listing of the resource.
-   *
-   * @return Response
-   */
-  public function index(Request $request)
+
+  public function __construct()
   {
-    $segments = [];
-
-    if ($request->has('rel')) {
-      $rels = explode('_', $request->input('rel'));
-      $segments = Segment::with($rels)->get();
-    } else {
-      $segments = Segment::all();
-    }
-
-    if ($request->has('query')) {
-      $query = $request->input('query');
-
-      $filterable = $segments->toArray();
-
-      $segments = array_filter($filterable, function ($segment) use ($query) {
-        return (stripos($segment['name'], $query) !== false);
-      });
-    }
-
-    if ($request->has('formatted')) {
-      if ($request->input('formatted') === 'semantic') {
-        $out = [];
-        foreach ($segments as $segment) {
-          $out[] = [
-            'name' => (is_object($segment) ? $segment->name : $segment['name']),
-            'value' => (is_object($segment) ? $segment->uuid : $segment['uuid'])
-          ];
-        }
-        return response()->json([
-          'success' => true,
-          'results' => $out
-        ]);
-      } 
-    }
-
+    $this->middleware('litterbox-auth', ['only' => ['store', 'update', 'destroy']]);
+    $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
+  }
+  
+  
+  public function index (Request $request)
+  {
+    $segments = Segment::all();
+    
     return response()->json([
-      'status'    => 200,
-      'data'      => $segments,
-      'heading'   => 'Segment',
-      'messages'  => null
+      'status'  =>  200,
+      'data'    =>  $segments->toArray(),
     ], 200);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    //
-  }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @return Response
-   */
-  public function store(Request $request)
+  public function show (Request $request, $segmentId)
+  {
+    $segment = Segment::where('uuid', $segmentId)->first();
+
+    if (!$segment) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Segment was not found'],
+      ], 404);
+    }
+    
+    return response()->json([
+      'status'  =>  200,
+      'data'    =>  $segment,
+    ], 200);
+  }
+  
+  
+  public function store (Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'name'            => 'required|string',
-      'sustainability'  => 'required|integer'
+      'name'            =>  'string|required',
+      'sustainability'  =>  'integer|required',
+    ]);
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    =>  400,
+        'messages'  =>  $messages,
+      ], 400);
+    }
+
+    $segment = Segment::create([
+      'uuid'            =>  Uuid::uuid4()->toString(),
+      'name'            =>  $request->input('name'),
+      'sustainability'  =>  $request->input('sustainability'),
     ]);
 
+    return response()->json([
+      'status'    =>  201,
+      'data'      =>  $segment,
+      'messages'  =>  null
+    ], 201);
+  }
+  
+  
+  public function update (Request $request, $segmentId)
+  {
+    $validator = Validator::make($request->all(), [
+      'name'            =>  'string',
+      'sustainability'  =>  'integer',
+    ]);
     if ($validator->fails()) {
       $messages = [];
       foreach ($validator->errors()->all() as $message) {
@@ -91,89 +93,68 @@ class SegmentController extends Controller {
       }
       return response()->json([
         'status'    => 400,
-        'data'      => null,
-        'heading'   => 'Segment',
         'messages'  => $messages
       ], 400);
     }
+    
+    $segment = Segment::where('uuid', $segmentId)->first();
 
-    $segmentData = [
-      'uuid'            => Uuid::uuid4()->toString(),
-      'name'            => $request->input('name'),
-      'sustainability'  => $request->input('sustainability'),
-    ];
-
-    $segment = Segment::create($segmentData);
-
-    return response()->json([
-      'status'    => 201,
-      'data'      => $segment,
-      'heading'   => 'Segment',
-      'message'   => ['Segment was created'],
-    ], 201);
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function show(Request $request, $id)
-  {
-    if ($request->has('rel')) {
-      $segment = Segment::with($rels)->where('uuid', $id)->get();
-    } else {
-      $segment = Segment::where('uuid', $id)->get();
+    if (!$segment) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Segment was not found'],
+      ], 404);
     }
-
-    return response()->json([
-      'status'    => 200,
-      'data'      => $segment,
-      'heading'   => 'Segment',
-      'messages'  => null
-    ], 200);
+    
+    $updatedData = [];
+    
+    if ($request->has('name')) {
+      $updatedData['name'] = $request->input('name');
+    }
+    
+    if ($request->has('sustainability')) {
+      $updatedData['sustainability'] = $request->input('sustainability');
+    }
+    
+    if (count($updatedData) == 0) {
+      return response()->json([
+        'status'    =>  200,
+        'messages'  =>  ['No data submitted'],
+      ], 200);
+    }
+    
+    $updated = $segment->update($updatedData);
+    
+    if ($updated) {
+      return response()->json([
+        'status'    =>  200,
+        'messages'  =>  ['Updated segment'],
+      ], 200);
+    } else {
+      return response()->json([
+        'status'    =>  400,
+        'messages'  =>  ['Failed to update segment'],
+      ], 400);
+    }
   }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
+  
+  
+  public function destroy ($segmentId)
   {
-    //
-  }
+    $segment = Segment::where('uuid', $segmentId)->first();
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update($id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $uuid
-   * @return Response
-   */
-  public function destroy($uuid)
-  {
-    $segment = Segment::where('uuid', $uuid)->first();
-
+    if (!$segment) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Segment was not found'],
+      ], 404);
+    }
+    
     $segment->delete();
 
     return response()->json([
-      'status'    => 200,
-      'data'      => $segment,
-      'heading'   => 'Segment',
-      'messages'  => ['Segment ' . $segment->name . ' deleted.']
+      'status'    =>  200,
+      'messages'  =>  ["Segment '$segment->name' deleted"],
     ], 200);
   }
 
