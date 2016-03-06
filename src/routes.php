@@ -33,6 +33,9 @@ Route::group(['middleware' => ['cors']], function () {
   // Chains
   Route::resource('chains', 'Wetcat\Litterbox\Controllers\ChainController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   
+  // ChainSegments
+  Route::resource('chainsegments', 'Wetcat\Litterbox\Controllers\ChainSegmentController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+  
   // Categories
   Route::resource('categories', 'Wetcat\Litterbox\Controllers\CategoryController', ['only' => ['index', 'store']]);
   
