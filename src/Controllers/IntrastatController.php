@@ -6,60 +6,56 @@ use Wetcat\Litterbox\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 
-use Wetcat\Litterbox\Models\Article;
 use Wetcat\Litterbox\Models\Intrastat;
 
 use Ramsey\Uuid\Uuid;
 
 class IntrastatController extends Controller {
 
-  /**
-   * Display a listing of the resource.
-   *
-   * @return Response
-   */
-  public function index(Request $request)
+
+  public function __construct()
   {
-    $intrastat = [];
-
-    if ($request->has('rel')) {
-      $rels = explode('_', $request->input('rel'));
-      $intrastat = Intrastat::with($rels)->get();
-    } else {
-      $intrastat = Intrastat::all();
-    }
-
+    $this->middleware('litterbox-auth', ['only' => ['store', 'update', 'destroy']]);
+    $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
+  }
+  
+  
+  public function index (Request $request)
+  {
+    $codes = Intrastat::all();
+    
     return response()->json([
-      'status'    => 200,
-      'data'      => $intrastat,
-      'heading'   => 'Intrastat',
-      'messages'  => null
+      'status'  => 200,
+      'data'    => $codes->toArray(),
     ], 200);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    //
-  }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @return Response
-   */
-  public function store(Request $request)
+  public function show (Request $request, $codeId)
+  {
+    $code = Intrastat::where('uuid', $codeId)->first();
+
+    if (!$code) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Intrastat code was not found'],
+      ], 404);
+    }
+    
+    return response()->json([
+      'status'  =>  200,
+      'data'    =>  $code,
+    ], 200);
+  }
+  
+  
+  public function store (Request $request)
   {
     $validator = Validator::make($request->all(), [
-      // Address data
-      'code'  => 'required',
-      'name'  => 'required'
+      'name'        =>  'string|required',
+      'code'        =>  'string|required',
     ]);
-    
+
     if ($validator->fails()) {
       $messages = [];
       foreach ($validator->errors()->all() as $message) {
@@ -67,133 +63,95 @@ class IntrastatController extends Controller {
       }
       return response()->json([
         'status'    => 400,
-        'data'      => null,
-        'heading'   => 'Intrastat',
         'messages'  => $messages
       ], 400);
     }
 
-    $intraStat = [
-      'uuid'    => Uuid::uuid4()->toString(),
-      'code'    => $request->input('code'),
-      'name'    => $request->input('name'),
+    $codeData = [
+      'uuid'  =>  Uuid::uuid4()->toString(),
+      'name'  =>  $request->input('name'),
+      'code'  =>  $request->input('code'),
     ];
 
-    $intrastat = Intrastat::create($intraStat);
+    $code = Intrastat::create($codeData);
 
-    $out = Intrastat::with('articles')->where('uuid', $intrastat->uuid)->first();
-    
-    $messages[] = 'Intrastat created';
-    
-    // We made it! Send a success!
     return response()->json([
-      'status'    => 201,
-      'data'      => $out,
-      'heading'   => 'Intrastat',
-      'messages'  => $messages
+      'status'  =>  201,
+      'data'    =>  $code,
     ], 201);
   }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function show(Request $request, $id)
-  {
-    if ($request->has('rel')) {
-      $intrastat = Intrastat::with($rels)->where('uuid', $id)->get();
-    } else {
-      $intrastat = Intrastat::where('uuid', $id)->get();
-    }
-    
-    return response()->json([
-      'status'    => 200,
-      'data'      => $intrastat,
-      'heading'   => 'Intrastat',
-      'messages'  => null
-    ], 200);
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update(Request $request, $uuid)
+  
+  
+  public function update (Request $request, $codeId)
   {
     $validator = Validator::make($request->all(), [
-      'name' => 'string',
-      'code' => 'string',
+      'name'        =>  'string',
+      'code'        =>  'string',
     ]);
+    
     if ($validator->fails()) {
       $messages = [];
       foreach ($validator->errors()->all() as $message) {
         $messages[] = $message;
       }
       return response()->json([
-        'status'    => 400,
-        'data'      => null,
-        'heading'   => 'Intrastat',
-        'messages'  => $messages
+        'status'    =>  400,
+        'messages'  =>  $messages
       ], 400);
     }
     
-    $intrastat = Intrastat::where('uuid', $uuid)->first();
+    $code = Intrastat::where('uuid', $codeId)->first();
     
-    if (!!$intrastat) {
-      
-      if ($request->has('name')) {
-        $intrastat->name = $request->input('name');
-      }
-      
-      if ($request->has('code')) {
-        $intrastat->code = $request->input('code');
-      }
-      
-      $intrastat->save();
-      
+    if (!$code) {
+      return response()->json([
+        'status'    => 404,
+        'messages'  => ['Intrastat code not found.']
+      ], 404);
+    }
+    
+    $updatedData = [];
+    
+    if ($request->has('name')) {
+      $code->name = $request->input('name');
+    }
+    
+    if ($request->has('code')) {
+      $code->code = $request->input('code');
+    }
+    
+    $updated = $code->update($updatedData);
+    
+    if ($updated) {
+      return response()->json([
+        'status'    =>  200,
+        'messages'  =>  ['Updated intrastat code'],
+      ], 200);
     } else {
       return response()->json([
-        'status'    => 400,
-        'data'      => null,
-        'heading'   => 'Intrastat',
-        'messages'  => ['Intrastat not found.']
+        'status'    =>  400,
+        'messages'  =>  ['Failed to update intrastat code'],
       ], 400);
     }
   }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function destroy($uuid)
+  
+  public function destroy ($codeId)
   {
-    $intrastat = Intrastat::where('uuid', $uuid)->first();
+    $code = Intrastat::where('uuid', $codeId)->first();
 
-    $intrastat->delete();
+    if (!$code) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Intrastat code was not found'],
+      ], 404);
+    }
+    
+    $code->delete();
 
     return response()->json([
-      'status'    => 200,
-      'data'      => $intrastat,
-      'heading'   => 'Intrastat',
-      'messages'  => ['Intrastat ' . $intrastat->name . ' deleted.']
-    ], 200); 
+      'status'    =>  200,
+      'messages'  =>  ["Intrastat code '$code->name' deleted"],
+    ], 200);
   }
 
 }

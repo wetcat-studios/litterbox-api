@@ -25,9 +25,9 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
   use SoftDeletes;
 
 	protected $label = 'Article';
-    
+      
 	protected $fillable = [
-    'uuid', 'name', 'number', 'ean', 'price', 'discountrate', 'restockthreshold', 'restockamount', 'description',
+    'uuid', 'name', 'articleNumber', 'ean', 'price', 'discountrate', 'restockthreshold', 'restockamount', 'filename', 'intrastat', 'description',
     'packageweight', 'packagewidth', 'packagelength', 'packageheight',
     'colliweight', 'colliwidth', 'collilength', 'colliheight',
     'packagepercolli', 'collipereupallet', 'collipereulav', 'colliperhalfpallet', 'colliperhalflav', 'collipershippallet', 'collipershiplav',

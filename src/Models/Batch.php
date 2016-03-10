@@ -27,9 +27,9 @@ class Batch extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Batch';
 
 	protected $fillable = [
-    'uuid', 'number', 'stock', 'expiration_date',
+    'uuid', 'batchNumber', 'date', 'lastDelivery', 'note',
 	];
-  
+      
   protected $hidden = [
   ];
 

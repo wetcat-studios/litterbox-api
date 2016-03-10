@@ -6,243 +6,191 @@ use Wetcat\Litterbox\Controllers\Controller;
 use Illuminate\Http\Request;
 use Validator;
 
-use Wetcat\Litterbox\Models\Category;
 use Wetcat\Litterbox\Models\Batch;
-use Wetcat\Litterbox\Models\Article;
-use Wetcat\Litterbox\Models\Brand;
-use Wetcat\Litterbox\Models\Manufacturer;
-use Wetcat\Litterbox\Models\Currency;
-use Wetcat\Litterbox\Models\Delivery;
-use Wetcat\Litterbox\Models\Segment;
 
 use Ramsey\Uuid\Uuid;
 
 class BatchController extends Controller {
 
-  /**
-   * Instantiate a new UserController instance.
-   *
-   * @return void
-   */
+
   public function __construct()
   {
-    $this->middleware('litterbox-auth');
+    $this->middleware('litterbox-auth', ['only' => ['store', 'update', 'destroy']]);
     $this->middleware('litterbox-admin', ['only' => ['store', 'update', 'destroy']]);
   }
   
-  /**
-   * Display a listing of the resource.
-   *
-   * @return Response
-   */
-  public function index(Request $request)
+  
+  public function index (Request $request)
   {
-    $batches = [];
-
-    if ($request->has('rel')) {
-      $rels = explode('_', $request->input('rel'));
-      $batches = Batch::with($rels)->get();
-    } else {
-      $batches = Batch::all();
+    $batches = Batch::all();
+    
+    $out = [];
+    
+    if (isset($batches) && count($batches) > 0) {
+      foreach ($batches as $batch) {
+        $b = [];
+        // Core data
+        $b['uuid'] = $batch->uuid;
+        if (isset($batch->batchNumber))
+          $b['batchNumber'] = $batch->batchNumber;
+        if (isset($batch->date))
+          $b['date'] = $batch->date;
+        if (isset($batch->lastDelivery))
+          $b['lastDelivery'] = $batch->lastDelivery;
+        if (isset($batch->note))
+          $b['note'] = $batch->note;
+        if (isset($batch->created_at))
+          $b['created_at'] = $batch->created_at;
+        if (isset($batch->deleted_at))
+          $b['deleted_at'] = $batch->deleted_at;
+        // Relationship (count)
+        $rel = $batch->article()->edge();
+        $b['count'] = $rel->count;
+        // Append composed batch
+        $out[] = $b;
+      }
     }
-
+    
     return response()->json([
-      'status'    => 200,
-      'data'      => $batches,
-      'heading'   => 'Batch',
-      'messages'  => null
+      'status'  => 200,
+      'data'    => $out,
     ], 200);
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return Response
-   */
-  public function create()
-  {
-    //
-  }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @return Response
-   */
-  public function store(Request $request)
+  public function show (Request $request, $batchId)
+  {
+    $batch = Batch::where('uuid', $batchId)->first();
+
+    if (!$batch) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Batch was not found'],
+      ], 404);
+    }
+    
+    $out = [];
+    
+    if (isset($batch)) {
+      $b = [];
+      // Core data
+      $b['uuid'] = $batch->uuid;
+      if (isset($batch->batchNumber))
+        $b['batchNumber'] = $batch->batchNumber;
+      if (isset($batch->date))
+        $b['date'] = $batch->date;
+      if (isset($batch->lastDelivery))
+        $b['lastDelivery'] = $batch->lastDelivery;
+      if (isset($batch->note))
+        $b['note'] = $batch->note;
+      if (isset($batch->created_at))
+        $b['created_at'] = $batch->created_at;
+      if (isset($batch->deleted_at))
+        $b['deleted_at'] = $batch->deleted_at;
+      // Relationship (count)
+      $rel = $batch->article()->edge();
+      $b['count'] = $rel->count;
+      // Append composed batch
+      $out[] = $b;
+    }
+    
+    return response()->json([
+      'status'  =>  200,
+      'data'    =>  $out,
+    ], 200);
+  }
+  
+  
+  public function update (Request $request, $batchId)
   {
     $validator = Validator::make($request->all(), [
-      'number'        => 'required',
-      'article'       => 'required|string',
-      'count'         => 'required|integer',
-      'date'          => 'required',
-      'lastdelivery'  => 'required',
+      'batchNumber'   => 'string',
+      'article'       => 'string',
+      'count'         => 'integer',
+      'date'          => 'date',
+      'lastDelivery'  => 'date',
       'note'          => 'string',
     ]);
+    
     if ($validator->fails()) {
       $messages = [];
       foreach ($validator->errors()->all() as $message) {
         $messages[] = $message;
       }
       return response()->json([
-        'status'    => 400,
-        'data'      => null,
-        'heading'   => 'Batch',
-        'messages'  => $messages
+        'status'    =>  400,
+        'messages'  =>  $messages
       ], 400);
     }
-
-    $batchData = [
-      'uuid'    => Uuid::uuid4()->toString(),
-      'number'  => $request->input('number'),
-      'date'    => $request->input('date'),
-      'lastdelivery'  => $request->input('lastdelivery'),
-      'note'    => $request->input('note'),
-    ];
-
-    $batch = Batch::create($batchData);
-
-    // Find and connect to Article
-    $article = Article::where('uuid', $request->input('article'))->first();
-    $rel = $article->batches()->save($batch);
-    $rel->count = $request->input('count');
-    $rel->save();
-
-/*
-Don't know what this is...
-    for ($i = 0; $i < count($request->input('article')); $i++) {
-      $article = Article::where('uuid', $request->input('article')[$i])->first();
-      if (!!$article) {
-        $rel = $article->orders()->save($order);
-
-        $rel->count = $request->input('count')[$i];
-        $rel->save();
-      }
-    }
-*/
-
-    return response()->json([
-      'status'    => 201,
-      'data'      => $batch,
-      'heading'   => 'Batch',
-      'message'   => ['Batch created.'],
-    ], 201);
-
-
-    /*
-    $validator = Validator::make($request->all(), [
-      // Batch validation
-      'number'    => 'required',
-      'stock'     => 'required',
-      'date'      => 'required',
-
-      // Article validation
-      'article'   => 'required|string',
-
-      // Delivery validation
-      'delivery'  => 'required|string',
-    ]);
-
-    if ($validator->fails()) {
-      $messages = [];
-      foreach ($validator->errors()->all() as $message) {
-        $messages[] = $message;
-      }
+    
+    $batch = Batch::where('uuid', $batchId)->first();
+    
+    if (!$batch) {
       return response()->json([
-        'status'    => 400,
-        'data'      => null,
-        'heading'   => 'Batch',
-        'messages'  => $messages
-      ], 400);
+        'status'    => 404,
+        'messages'  => ['Batch not found.']
+      ], 404);
     }
-
-    $batchData = [
-      'uuid'    => Uuid::uuid4()->toString(),
-      'number'  => $request->input('number'),
-      'stock'   => $request->input('stock'),
-      'date'    => $request->input('date')
-    ];
-
-    $messages = [];
-
-    // Create the batch
-    $batch = Batch::create($batchData);
-
-    if (!!$batch && $batch->exists) {
-      $messages[] = 'Batch created.';
+    
+    $updatedData = [];
+    
+    if ($request->has('batchNumber')) {
+      $updateData['batchNumber'] = $request->input('batchNumber');
     }
-
-    // Find and connect to Article
-    $article = Article::where('uuid', $request->input('article'))->firstOrFail();
-    $relation = $article->batches()->save($batch);
-
-    // Find and connect to Delivery
-    $delivery = Delivery::where('uuid', $request->input('delivery'))->firstOrFail();
-    $relation = $delivery->batches()->save($batch);
-
-    // We made it! Send a success!
-    return response()->json([
-      'status'    => 201,
-      'data'      => $batch,
-      'heading'   => 'Batch',
-      'messages'  => $messages
-    ], 201);
-    */
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function show(Request $request, $id)
-  {
-    if ($request->has('rel')) {
-      $batch = Batch::with($rels)->where('uuid', $id)->get();
+    
+    if ($request->has('article')) {
+      $updateData['article'] = $request->input('article');
+    }
+    
+    if ($request->has('count')) {
+      $updateData['count'] = $request->input('count');
+    }
+    
+    if ($request->has('date')) {
+      $updateData['date'] = $request->input('date');
+    }
+    
+    if ($request->has('lastDelivery')) {
+      $updateData['lastDelivery'] = $request->input('lastDelivery');
+    }
+    
+    if ($request->has('note')) {
+      $updateData['note'] = $request->input('note');
+    }
+    
+    $updated = $batch->update($updateData);
+    
+    if ($updated) {
+      return response()->json([
+        'status'    =>  200,
+        'messages'  =>  ['Updated batch'],
+      ], 200);
     } else {
-      $batch = Batch::where('uuid', $id)->get();
+      return response()->json([
+        'status'    =>  400,
+        'messages'  =>  ['Failed to update batch'],
+      ], 400);
     }
+  }
+
+  
+  public function destroy ($batchId)
+  {
+    $batch = Batch::where('uuid', $batchId)->first();
+
+    if (!$batch) {
+      return response()->json([
+        'status'    =>  404,
+        'messages'  =>  ['Batch was not found'],
+      ], 404);
+    }
+    
+    $batch->delete();
 
     return response()->json([
-      'status'    => 200,
-      'data'      => $batch,
-      'heading'   => 'Batch',
-      'messages'  => null
+      'status'    =>  200,
+      'messages'  =>  ["Batch '$batch->name' deleted"],
     ], 200);
-  }
-
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function edit($id)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function update($id)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return Response
-   */
-  public function destroy($id)
-  {
-    //
   }
 
 }
