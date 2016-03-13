@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Validator;
 use Input;
 
-use Wetcat\Litterbox\Models\Article;
-use Wetcat\Litterbox\Models\Manufacturer;
+use Wetcat\Litterbox\Models\Currency;
+use Wetcat\Litterbox\Models\Rate;
 
 use Ramsey\Uuid\Uuid;
 
-class ArticleManufacturerController extends Controller {
+class CurrencyRateController extends Controller {
 
 
   /**
@@ -26,37 +26,35 @@ class ArticleManufacturerController extends Controller {
   
   
   /**
-   * Show the manfacturers for the Article.
+   * Show the rates for the currency.
    */
-  public function index (Request $request, $articleId)
+  public function index (Request $request, $currencyId)
   {
-    $article = Article::where('uuid', $articleId)->first();
+    $currency = Currency::where('uuid', $currencyId)->first();
     
-    if (!$article) {
+    if (!$currency) {
       return response()->json([
         'status'    =>  404,
-        'messages'  =>  ['The article was not found'],
+        'messages'  =>  ['The currency was not found'],
       ], 404);
     }
     
-    $manufacturer = $article->manufacturer()->first();
+    $rates = $currency->rates()->get();
     
     return response()->json([
       'status'  =>  200,
-      'data'    =>  $manufacturer,
+      'data'    =>  $rates,
     ], 200);
   }
   
   
   /**
-   * Create a new manufacturer, and automatically attach it to the article.
+   * Create a new rate, and automatically attach it to the currency.
    */
-  public function store (Request $request, $articleId)
+  public function store (Request $request, $currencyId)
   {
     $validator = Validator::make($request->all(), [
-      'name'      =>  'string|required',
-      'shipping'  =>  'integer|required',
-      'rebate'    =>  'integer',
+      'rate'  =>  'required|regex:/^[0-9]+[.,]?[0-9]*/',
     ]);
 
     if ($validator->fails()) {
@@ -70,38 +68,38 @@ class ArticleManufacturerController extends Controller {
       ], 400);
     }
     
-    $article = Article::where('uuid', $articleId)->first();
+    $currency = Currency::where('uuid', $currencyId)->first();
     
-    if (!$article) {
+    if (!$currency) {
       return response()->json([
         'status'    => 404,
         'data'      => null,
-        'messages'  => ['The article was not found']
+        'messages'  => ['The currency was not found']
       ], 404);
     }
 
-    $manufacturerData = [
-      'uuid'      =>  Uuid::uuid4()->toString(),
-      'name'      =>  $request->input('name'),
-      'rebate'    =>  $request->input('rebate'),
-      'shipping'  =>  $request->input('shipping'),
+    // Make sure the Rate is always using dot-notation for international purposes!
+    $rate = str_replace(',', ".", $request->input('rate'));
+    $rateData = [
+      'uuid'  => Uuid::uuid4()->toString(),
+      'rate'  => $rate
     ];
 
-    $manufacturer = Manufacturer::create($manufacturerData);
+    $segment = Segment::create($segmentData);
 
-    $rel = $manufacturer->articles()->save($article);
+    $rel = $segment->articles()->save($article);
     
     return response()->json([
       'status'  =>  201,
-      'data'    =>  $manufacturer,
+      'data'    =>  $segment,
     ], 201);
   }
   
   
   /**
-   * Connect an article and a manufacturer
+   * Connect an article and a segment
    */
-  public function update (Request $request, $articleId, $manufacturerId)
+  public function update (Request $request, $articleId, $segmentId)
   {
     $article = Article::where('uuid', $articleId)->first();
     
@@ -112,28 +110,28 @@ class ArticleManufacturerController extends Controller {
       ], 404);
     }
     
-    $manufacturer = Manufacturer::where('uuid', $manufacturerId)->first();
+    $segment = Segment::where('uuid', $segmentId)->first();
     
-    if (!$manufacturer) {
+    if (!$segment) {
       return response()->json([
         'status'    =>  404,
-        'messages'  =>  ['Manufacturer not found'],
+        'messages'  =>  ['Segment not found'],
       ], 404);
     }
     
-    $rel = $manufacturer->articles()->save($article);
+    $rel = $segment->articles()->save($article);
     
     return response()->json([
       'status'    => 201,
-      'messages'  => ['Connected article to manufacturer']
+      'messages'  => ['Connected article to segment']
     ], 201);
   }
   
   
   /**
-   * Delete a relationship between an article and a manufacturer
+   * Delete a relationship between an article and a segment
    */
-  public function destroy ($articleId, $manufacturerId)
+  public function destroy ($articleId, $segmentId)
   {
     $article = Article::where('uuid', $articleId)->first();
     
@@ -144,16 +142,16 @@ class ArticleManufacturerController extends Controller {
       ], 404);
     }
     
-    $manufacturer = Manufacturer::where('uuid', $manufacturerId)->first();
+    $segment = Segment::where('uuid', $segmentId)->first();
     
-    if (!$manufacturer) {
+    if (!$segment) {
       return response()->json([
         'status'    =>  404,
-        'messages'  =>  ['Manufacturer was not found'],
+        'messages'  =>  ['Segment was not found'],
       ], 404);
     }
     
-    $rel = $article->manufacturer()->edge($manufacturer);
+    $rel = $article->segment()->edge($segment);
     
     if (!$rel) {
       return response()->json([

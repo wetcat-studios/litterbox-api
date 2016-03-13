@@ -27,10 +27,10 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Article';
       
 	protected $fillable = [
-    'uuid', 'name', 'articleNumber', 'ean', 'price', 'discountrate', 'restockthreshold', 'restockamount', 'filename', 'intrastat', 'description',
-    'packageweight', 'packagewidth', 'packagelength', 'packageheight',
-    'colliweight', 'colliwidth', 'collilength', 'colliheight',
-    'packagepercolli', 'collipereupallet', 'collipereulav', 'colliperhalfpallet', 'colliperhalflav', 'collipershippallet', 'collipershiplav',
+    'uuid', 'name', 'articleNumber', 'ean', 'price', 'discountRate', 'restockThreshold', 'restockAmount', 'filename', 'intrastat', 'description', 'packages',
+    'packageWeight', 'packageWidth', 'packageLength', 'packageHeight',
+    'colliweight', 'colliWidth', 'colliLength', 'colliHeight',
+    'colliPerEuPallet', 'colliPerEuLav', 'colliPerHalfPallet', 'colliPerHalfLav', 'colliPerShipPallet', 'colliPerShipLav',
     'kj', 'kcal', 'fat', 'saturatedfat', 'carbs', 'sugar', 'fibers', 'proteins', 'salt',
 	
     'productCost', 'unitPrice', 'salesPrice', 'calculatedMargin',

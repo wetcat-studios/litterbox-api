@@ -52,8 +52,8 @@ class ManufacturerController extends Controller {
   {
     $validator = Validator::make($request->all(), [
       'name'      =>  'string|required',
+      'shipping'  =>  'integer|required',
       'rebate'    =>  'integer',
-      'shipping'  =>  'integer',
     ]);
 
     if ($validator->fails()) {

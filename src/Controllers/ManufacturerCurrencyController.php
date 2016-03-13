@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Validator;
 use Input;
 
-use Wetcat\Litterbox\Models\Article;
+use Wetcat\Litterbox\Models\Currency;
 use Wetcat\Litterbox\Models\Manufacturer;
 
 use Ramsey\Uuid\Uuid;
 
-class ArticleManufacturerController extends Controller {
+class ManufacturerCurrencyController extends Controller {
 
 
   /**
@@ -26,37 +26,39 @@ class ArticleManufacturerController extends Controller {
   
   
   /**
-   * Show the manfacturers for the Article.
+   * Show the currencies for the manufacturer.
    */
-  public function index (Request $request, $articleId)
+  public function index (Request $request, $manufacturerId)
   {
-    $article = Article::where('uuid', $articleId)->first();
+    $manufacturer = Manufacturer::where('uuid', $manufacturerId)->first();
     
-    if (!$article) {
+    if (!$manufacturer) {
       return response()->json([
         'status'    =>  404,
-        'messages'  =>  ['The article was not found'],
+        'messages'  =>  ['The manufacturer was not found'],
       ], 404);
     }
     
-    $manufacturer = $article->manufacturer()->first();
+    $currency = $manufacturer->currency()->with(['rates' => function ($query) {
+      $query->orderBy('created_at', 'desc')->first();
+    }])->first();
     
     return response()->json([
       'status'  =>  200,
-      'data'    =>  $manufacturer,
+      'data'    =>  $currency,
     ], 200);
   }
   
   
   /**
-   * Create a new manufacturer, and automatically attach it to the article.
+   * Create a new currency, and automatically attach it to the manufacturer.
    */
   public function store (Request $request, $articleId)
   {
     $validator = Validator::make($request->all(), [
       'name'      =>  'string|required',
-      'shipping'  =>  'integer|required',
       'rebate'    =>  'integer',
+      'shipping'  =>  'integer',
     ]);
 
     if ($validator->fails()) {

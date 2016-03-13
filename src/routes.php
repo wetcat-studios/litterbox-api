@@ -46,6 +46,7 @@ Route::group(['middleware' => ['cors']], function () {
   
   // Manufacturers
   Route::resource('manufacturers', 'Wetcat\Litterbox\Controllers\ManufacturerController', ['only' => ['index', 'show', 'update', 'store', 'destroy']]);
+  Route::resource('manufacturers.currencies', 'Wetcat\Litterbox\Controllers\ManufacturerCurrencyController', ['only' => ['index', 'store', 'update', 'destroy']]);
   
   // Segments
   Route::resource('segments', 'Wetcat\Litterbox\Controllers\SegmentController', ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
@@ -53,6 +54,10 @@ Route::group(['middleware' => ['cors']], function () {
   // Intrastat
   Route::resource('intrastats', 'Wetcat\Litterbox\Controllers\IntrastatController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
   Route::resource('intrastats.articles', 'Wetcat\Litterbox\Controllers\IntrastatArticleController', ['only' => ['index', 'update', 'destroy']]);
+  
+  // Currency
+  Route::resource('currencies', 'Wetcat\Litterbox\Controllers\CurrencyController', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+  Route::resource('currencies.rates', 'Wetcat\Litterbox\Controllers\CurrencyRateController', ['only' => ['index', 'update', 'destroy']]);
   
   /*
   
