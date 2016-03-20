@@ -63,6 +63,7 @@ class ArticleController extends Controller {
       'filename'          =>  'string',
       'intrastat'         =>  'string',
       'description'       =>  'string',
+      'note'              =>  'string',
       'packages'          =>  'string',
       'size'              =>  'string',
       
@@ -138,6 +139,9 @@ class ArticleController extends Controller {
       
     if ($request->has('description'))
       $articleData['description'] = $request->input('description');
+      
+    if ($request->has('note'))
+      $articleData['note'] = $request->input('note');
       
     if ($request->has('packages'))
       $articleData['packages'] = $request->input('packages');
@@ -237,6 +241,7 @@ class ArticleController extends Controller {
       'filename'          =>  'string',
       'intrastat'         =>  'string',
       'description'       =>  'string',
+      'note'              =>  'string',
       'packages'          =>  'string',
       'size'              =>  'string',
       
@@ -323,6 +328,9 @@ class ArticleController extends Controller {
       
     if ($request->has('description'))
       $updatedData['description'] = $request->input('description');
+      
+    if ($request->has('note'))
+      $updatedData['note'] = $request->input('note');
       
     if ($request->has('packages'))
       $updatedData['packages'] = $request->input('packages');
