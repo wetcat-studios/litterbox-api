@@ -76,13 +76,13 @@ class ArticleController extends Controller {
       'colliWidth'        =>  'string',
       'colliLength'       =>  'string',
       'colliHeight'       =>  'string',
-      
-      'colliPerEuPallet'    =>  'string',
-      'colliPerEuLav'       =>  'string',
-      'colliPerHalfPallet'  =>  'string',
-      'colliPerHalfLav'     =>  'string',
-      'colliPerShipPallet'  =>  'string',
-      'colliPerShipLav'     =>  'string',
+          
+      'colliEuPallet'    =>  'string',
+      'colliEuLav'       =>  'string',
+      'colliHalfPallet'  =>  'string',
+      'colliHalfLav'     =>  'string',
+      'colliShipPallet'  =>  'string',
+      'colliShipLav'     =>  'string',
       
       'kj'            =>  'string',
       'kcal'          =>  'string',
@@ -167,29 +167,29 @@ class ArticleController extends Controller {
     if ($request->has('colliWidth'))
       $articleData['colliWidth'] = $request->input('colliWidth');
       
-    if ($request->has('packageLength'))
-      $articleData['packageLength'] = $request->input('packageLength');
+    if ($request->has('colliLength'))
+      $articleData['colliLength'] = $request->input('colliLength');
       
-    if ($request->has('packageHeight'))
-      $articleData['packageHeight'] = $request->input('packageHeight');
+    if ($request->has('colliHeight'))
+      $articleData['colliHeight'] = $request->input('colliHeight');
       
-    if ($request->has('colliPerEuPallet'))
-      $articleData['colliPerEuPallet'] = $request->input('colliPerEuPallet');
+    if ($request->has('colliEuPallet'))
+      $articleData['colliEuPallet'] = $request->input('colliEuPallet');
       
-    if ($request->has('colliPerEuLav'))
-      $articleData['colliPerEuLav'] = $request->input('colliPerEuLav');
+    if ($request->has('colliEuLav'))
+      $articleData['colliEuLav'] = $request->input('colliEuLav');
       
-    if ($request->has('colliPerHalfPallet'))
-      $articleData['colliPerHalfPallet'] = $request->input('colliPerHalfPallet');
+    if ($request->has('colliHalfPallet'))
+      $articleData['colliHalfPallet'] = $request->input('colliHalfPallet');
       
-    if ($request->has('colliPerHalfLav'))
-      $articleData['colliPerHalfLav'] = $request->input('colliPerHalfLav');
+    if ($request->has('colliHalfLav'))
+      $articleData['colliHalfLav'] = $request->input('colliHalfLav');
       
-    if ($request->has('colliPerShipPallet'))
-      $articleData['colliPerShipPallet'] = $request->input('colliPerShipPallet');
+    if ($request->has('colliShipPallet'))
+      $articleData['colliShipPallet'] = $request->input('colliShipPallet');
       
-    if ($request->has('colliPerShipLav'))
-      $articleData['colliPerShipLav'] = $request->input('colliPerShipLav');
+    if ($request->has('colliShipLav'))
+      $articleData['colliShipLav'] = $request->input('colliShipLav');
       
     if ($request->has('kj'))
       $articleData['kj'] = $request->input('kj');
@@ -255,12 +255,12 @@ class ArticleController extends Controller {
       'colliLength'       =>  'string',
       'colliHeight'       =>  'string',
       
-      'colliPerEuPallet'    =>  'string',
-      'colliPerEuLav'       =>  'string',
-      'colliPerHalfPallet'  =>  'string',
-      'colliPerHalfLav'     =>  'string',
-      'colliPerShipPallet'  =>  'string',
-      'colliPerShipLav'     =>  'string',
+      'colliEuPallet'    =>  'string',
+      'colliEuLav'       =>  'string',
+      'colliHalfPallet'  =>  'string',
+      'colliHalfLav'     =>  'string',
+      'colliShipPallet'  =>  'string',
+      'colliShipLav'     =>  'string',
       
       'kj'            =>  'string',
       'kcal'          =>  'string',
@@ -356,29 +356,29 @@ class ArticleController extends Controller {
     if ($request->has('colliWidth'))
       $updatedData['colliWidth'] = $request->input('colliWidth');
       
-    if ($request->has('packageLength'))
-      $updatedData['packageLength'] = $request->input('packageLength');
+    if ($request->has('colliLength'))
+      $updatedData['colliLength'] = $request->input('colliLength');
       
-    if ($request->has('packageHeight'))
-      $updatedData['packageHeight'] = $request->input('packageHeight');
+    if ($request->has('colliHeight'))
+      $updatedData['colliHeight'] = $request->input('colliHeight');
       
-    if ($request->has('colliPerEuPallet'))
-      $updatedData['colliPerEuPallet'] = $request->input('colliPerEuPallet');
+    if ($request->has('colliEuPallet'))
+      $updatedData['colliEuPallet'] = $request->input('colliEuPallet');
       
-    if ($request->has('colliPerEuLav'))
-      $updatedData['colliPerEuLav'] = $request->input('colliPerEuLav');
+    if ($request->has('colliEuLav'))
+      $updatedData['colliEuLav'] = $request->input('colliEuLav');
       
-    if ($request->has('colliPerHalfPallet'))
-      $updatedData['colliPerHalfPallet'] = $request->input('colliPerHalfPallet');
+    if ($request->has('colliHalfPallet'))
+      $updatedData['colliHalfPallet'] = $request->input('colliHalfPallet');
       
-    if ($request->has('colliPerHalfLav'))
-      $updatedData['colliPerHalfLav'] = $request->input('colliPerHalfLav');
+    if ($request->has('colliHalfLav'))
+      $updatedData['colliHalfLav'] = $request->input('colliHalfLav');
       
-    if ($request->has('colliPerShipPallet'))
-      $updatedData['colliPerShipPallet'] = $request->input('colliPerShipPallet');
+    if ($request->has('colliShipPallet'))
+      $updatedData['colliShipPallet'] = $request->input('colliShipPallet');
       
-    if ($request->has('colliPerShipLav'))
-      $updatedData['colliPerShipLav'] = $request->input('colliPerShipLav');
+    if ($request->has('colliShipLav'))
+      $updatedData['colliShipLav'] = $request->input('colliShipLav');
       
     if ($request->has('kj'))
       $updatedData['kj'] = $request->input('kj');
