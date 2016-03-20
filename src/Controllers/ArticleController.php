@@ -56,6 +56,7 @@ class ArticleController extends Controller {
       'name'              =>  'string|required',
       'articleNumber'     =>  'string|required',
       'ean'               =>  'string|required',
+      'price'             =>  'integer|required',
       'discountRate'      =>  'integer',
       'restockThreshold'  =>  'integer',
       'restockAmount'     =>  'integer',
@@ -113,6 +114,7 @@ class ArticleController extends Controller {
       'name'              =>  $request->input('name'),
       'articleNumber'     =>  $request->input('articleNumber'),
       'ean'               =>  $request->input('ean'),
+      'price'             =>  $request->input('price'),
       'productCost'       =>  $request->input('productCost'),
       'unitPrice'         =>  $request->input('unitPrice'),
       'salesPrice'        =>  $request->input('salesPrice'),
@@ -194,8 +196,8 @@ class ArticleController extends Controller {
     if ($request->has('fat'))
       $articleData['fat'] = $request->input('fat');
       
-    if ($request->has('saturatedfat'))
-      $articleData['saturatedfat'] = $request->input('saturatedfat');
+    if ($request->has('saturatedFat'))
+      $articleData['saturatedFat'] = $request->input('saturatedFat');
       
     if ($request->has('carbs'))
       $articleData['carbs'] = $request->input('carbs');
@@ -228,6 +230,7 @@ class ArticleController extends Controller {
       'name'              =>  'string',
       'articleNumber'     =>  'string',
       'ean'               =>  'string',
+      'price'             =>  'integer',
       'discountRate'      =>  'integer',
       'restockThreshold'  =>  'integer',
       'restockAmount'     =>  'integer',
@@ -257,7 +260,7 @@ class ArticleController extends Controller {
       'kj'            =>  'string',
       'kcal'          =>  'string',
       'fat'           =>  'string',
-      'saturatedfat'  =>  'string',
+      'saturatedFat'  =>  'string',
       'carbs'         =>  'string',
       'sugar'         =>  'string',
       'fibers'        =>  'string',
@@ -299,6 +302,9 @@ class ArticleController extends Controller {
       
     if ($request->has('ean'))
       $updatedData['ean'] = $request->input('ean');
+      
+    if ($request->has('price'))
+      $updatedData['price'] = $request->input('price');
       
     if ($request->has('discountRate'))
       $updatedData['discountRate'] = $request->input('discountRate');
@@ -375,8 +381,8 @@ class ArticleController extends Controller {
     if ($request->has('fat'))
       $updatedData['fat'] = $request->input('fat');
       
-    if ($request->has('saturatedfat'))
-      $updatedData['saturatedfat'] = $request->input('saturatedfat');
+    if ($request->has('saturatedFat'))
+      $updatedData['saturatedFat'] = $request->input('saturatedFat');
       
     if ($request->has('carbs'))
       $updatedData['carbs'] = $request->input('carbs');
