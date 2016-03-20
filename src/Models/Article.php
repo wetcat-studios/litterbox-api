@@ -31,7 +31,7 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
     'packageWeight', 'packageWidth', 'packageLength', 'packageHeight',
     'colliWeight', 'colliWidth', 'colliLength', 'colliHeight',
     'colliEuPallet', 'colliEuLav', 'colliHalfPallet', 'colliHalfLav', 'colliShipPallet', 'colliShipLav',
-    'kj', 'kcal', 'fat', 'saturatedfat', 'carbs', 'sugar', 'fibers', 'proteins', 'salt',
+    'kj', 'kcal', 'fat', 'saturatedFat', 'carbs', 'sugar', 'fibers', 'proteins', 'salt',
 	
     'productCost', 'unitPrice', 'salesPrice', 'calculatedMargin',
   ];
