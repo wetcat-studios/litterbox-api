@@ -63,6 +63,7 @@ class ArticleController extends Controller {
       'intrastat'         =>  'string',
       'description'       =>  'string',
       'packages'          =>  'string',
+      'size'              =>  'string',
       
       'packageWeight'     =>  'string',
       'packageWidth'      =>  'string',
@@ -138,6 +139,9 @@ class ArticleController extends Controller {
       
     if ($request->has('packages'))
       $articleData['packages'] = $request->input('packages');
+      
+    if ($request->has('size'))
+      $articleData['size'] = $request->input('size');
       
     if ($request->has('packageWeight'))
       $articleData['packageWeight'] = $request->input('packageWeight');
@@ -231,6 +235,7 @@ class ArticleController extends Controller {
       'intrastat'         =>  'string',
       'description'       =>  'string',
       'packages'          =>  'string',
+      'size'              =>  'string',
       
       'packageWeight'     =>  'string',
       'packageWidth'      =>  'string',
@@ -315,6 +320,9 @@ class ArticleController extends Controller {
       
     if ($request->has('packages'))
       $updatedData['packages'] = $request->input('packages');
+      
+    if ($request->has('size'))
+      $updatedData['size'] = $request->input('size');
       
     if ($request->has('packageWeight'))
       $updatedData['packageWeight'] = $request->input('packageWeight');

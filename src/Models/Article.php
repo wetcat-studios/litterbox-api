@@ -27,7 +27,7 @@ class Article extends \Vinelab\NeoEloquent\Eloquent\Model  {
 	protected $label = 'Article';
       
 	protected $fillable = [
-    'uuid', 'name', 'articleNumber', 'ean', 'price', 'discountRate', 'restockThreshold', 'restockAmount', 'filename', 'intrastat', 'description', 'packages',
+    'uuid', 'name', 'articleNumber', 'ean', 'price', 'discountRate', 'restockThreshold', 'restockAmount', 'filename', 'intrastat', 'description', 'packages', 'size',
     'packageWeight', 'packageWidth', 'packageLength', 'packageHeight',
     'colliweight', 'colliWidth', 'colliLength', 'colliHeight',
     'colliPerEuPallet', 'colliPerEuLav', 'colliPerHalfPallet', 'colliPerHalfLav', 'colliPerShipPallet', 'colliPerShipLav',

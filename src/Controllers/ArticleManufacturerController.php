@@ -41,9 +41,12 @@ class ArticleManufacturerController extends Controller {
     
     $manufacturer = $article->manufacturer()->first();
     
+    $out = $manufacturer->toArray();
+    $out['manufacturerNumber'] = $manufacturer->articles()->edge($article)->manufacturerNumber;
+    
     return response()->json([
       'status'  =>  200,
-      'data'    =>  $manufacturer,
+      'data'    =>  $out,
     ], 200);
   }
   
@@ -54,9 +57,10 @@ class ArticleManufacturerController extends Controller {
   public function store (Request $request, $articleId)
   {
     $validator = Validator::make($request->all(), [
-      'name'      =>  'string|required',
-      'shipping'  =>  'integer|required',
-      'rebate'    =>  'integer',
+      'name'                =>  'string|required',
+      'shipping'            =>  'integer|required',
+      'rebate'              =>  'integer',
+      'manufacturerNumber'  =>  'string|required',
     ]);
 
     if ($validator->fails()) {
@@ -90,6 +94,8 @@ class ArticleManufacturerController extends Controller {
     $manufacturer = Manufacturer::create($manufacturerData);
 
     $rel = $manufacturer->articles()->save($article);
+    $rel->manufacturerNumber = $request->input('manufacturerNumber');
+    $rel->save();
     
     return response()->json([
       'status'  =>  201,
@@ -103,6 +109,21 @@ class ArticleManufacturerController extends Controller {
    */
   public function update (Request $request, $articleId, $manufacturerId)
   {
+    $validator = Validator::make($request->all(), [
+      'manufacturerNumber'  =>  'string|required',
+    ]);
+
+    if ($validator->fails()) {
+      $messages = [];
+      foreach ($validator->errors()->all() as $message) {
+        $messages[] = $message;
+      }
+      return response()->json([
+        'status'    =>  400,
+        'messages'  =>  $messages
+      ], 400);
+    }
+    
     $article = Article::where('uuid', $articleId)->first();
     
     if (!$article) {
@@ -122,6 +143,8 @@ class ArticleManufacturerController extends Controller {
     }
     
     $rel = $manufacturer->articles()->save($article);
+    $rel->manufacturerNumber = $request->input('manufacturerNumber');
+    $rel->save();
     
     return response()->json([
       'status'    => 201,
