@@ -119,7 +119,14 @@ class ArticleSegmentController extends Controller {
       ], 404);
     }
     
-    $rel = $segment->articles()->save($article);
+    // An article can only have one segment relationship, make sure to
+    // delete the old relationship
+    $old = $article->segment()->edge();
+    if ($old) {
+      $result = $old->delete();
+    }
+    
+    $new = $segment->articles()->save($article);
     
     return response()->json([
       'status'    => 201,
