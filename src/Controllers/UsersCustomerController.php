@@ -10,7 +10,7 @@ use Wetcat\Litterbox\Models\Segment;
 
 use Ramsey\Uuid\Uuid;
 
-class SegmentController extends Controller {
+class UsersCustomerController extends Controller {
 
   /**
    * Instantiate a new UserController instance.
