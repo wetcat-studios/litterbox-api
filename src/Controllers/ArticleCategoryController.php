@@ -143,6 +143,14 @@ class ArticleCategoryController extends Controller {
       ], 404);
     }
     
+    // Disconnect the previous category type (if one exists)
+    $rels = $article->categories()->edge();
+    foreach ($rels as $rel) {
+      if ($rel->type === $request->input('type')) {
+        $rel->delete();
+      }
+    }
+    
     $rel = $article->categories()->save($category);
     
     $rel->type = $request->input('type');
